@@ -1,16 +1,26 @@
-/*	Main.cpp
-	The entry point of the program.
-	Cavestory Remake as guided by Limeoats
-*/
+/*************************************************************************
+File name:		main.cpp
+Description:	The entry point of the program.
+				Cavestory Remake as guided by Limeoats
+**************************************************************************/
 
+/*************************************************************************
+Includes
+**************************************************************************/
 #include <SDL.h>
-#include "graphics.h"
+#include "game.h"
 
+/*************************************************************************
+Constructors and Deconstructors
+**************************************************************************/
 
+/*************************************************************************
+Functions
+**************************************************************************/
+//main: entry point of program
 int main(int argc, char ** argv)
 {
-	Graphics graphics;
+	Game game;	//game element for Cavestory
 
-	while(true){}
 	return 0;
 }

@@ -1,8 +1,9 @@
-/*	Graphics class header file	
-*/
+/*************************************************************************
+File name:		graphics.h
+Description:	Header file for Graphics class.
+**************************************************************************/
 
-//this is a #include guard. If graphics.h is included my multiple files,
-//it will only define the Graphics class once
+//#include guard.  Prevents double definitions
 #ifndef GRAPHICS_H
 #define GRAPHICS_H
 
@@ -18,4 +19,4 @@ private:
 	SDL_Renderer* _renderer;
 
 };
-#endif
+#endif	//end of #include guard
