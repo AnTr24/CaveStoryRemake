@@ -23,13 +23,13 @@ void Input::BeginNewFrame() {
 }
 
 //KeyDownEvent	-	This should be called when a key has been pressed
-void Input::KeyDownEvent(const SDL_Event &event) {
+void Input::KeyDownEvent(const SDL_Event& event) {
 	this->_mPressedKeys[event.key.keysym.scancode] = true;	//key was pressed = true
 	this->_mHeldKeys[event.key.keysym.scancode] = true; //key being pressed is also currently held
 }
 
 //KeyUpEvent - This should be called when a key is released
-void Input::KeyUpEvent(const SDL_Event &event) {
+void Input::KeyUpEvent(const SDL_Event& event) {
 	this->_mReleasedKeys[event.key.keysym.scancode] = true;	//key was released = true
 	this->_mHeldKeys[event.key.keysym.scancode] = false; //key is no longer being held
 }

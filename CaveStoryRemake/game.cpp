@@ -40,12 +40,18 @@ Functions
 
 //loop that controls the Game on a frame-by-frame basis
 void Game::GameLoop() {
+	//Game loop Inits*****************************************************************************
 	Graphics graphics;	//Game graphic/window
 	Input input;		//Controls and contains info on user inputs(Cavestory is keyboard only)
 	SDL_Event event;	//Holds what event happens in a frame
 
+	//player spritesheet is 16x16 per sprite, floats are for location on screen
+	//for visual studio, filepath starts at the folder where the .cpp and .h files are
+	this->_sPlayer = Sprite(graphics, "Content/Sprites/MyChar.png", 0, 0, 16, 16, 100, 100);
+
 	int LAST_UPDATE_TIME = SDL_GetTicks();	//get timing of first frame
 
+	//Game loop Inits END***************************************************************************
 	//Start gameloop and it occurs continuously...
 	while (true) {	//this is the beginning of a frame
 
@@ -53,11 +59,11 @@ void Game::GameLoop() {
 		SDL_PollEvent(&event);	//Poll for what event occured
 
 		//Take action depending on event type
-		switch (event.type)	
+		switch (event.type)
 		{
 		case SDL_KEYDOWN:	//Key was pressed
 			if (event.key.repeat == 0) //check for keys that weren't held
-			{	
+			{
 				input.KeyDownEvent(event);	//trigger keydown event
 			}
 			break;
@@ -82,11 +88,15 @@ void Game::GameLoop() {
 
 		LAST_UPDATE_TIME = CURRENT_TIME_MS;	//update next frame start time
 
+		this->Draw(graphics);
 	}	//end of frame
 }
 
-void Game::Draw(Graphics &graphics) {
+void Game::Draw(Graphics& graphics) {
+	graphics.Clear();
 
+	this->_sPlayer.Draw(graphics, 100, 100);
+	graphics.Render();
 }
 
 void Game::Update(float elapsedtime) {

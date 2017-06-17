@@ -17,8 +17,8 @@ class Input {
 public:
 	void BeginNewFrame();
 
-	void KeyUpEvent(const SDL_Event &event);	
-	void KeyDownEvent(const SDL_Event &event);
+	void KeyUpEvent(const SDL_Event& event);	
+	void KeyDownEvent(const SDL_Event& event);
 
 	//Determine if key...
 	bool WasKeyPressed(SDL_Scancode scKey);	//...was pressed
