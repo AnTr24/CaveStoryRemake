@@ -47,7 +47,9 @@ void Game::GameLoop() {
 
 	//player spritesheet is 16x16 per sprite, floats are for location on screen
 	//for visual studio, filepath starts at the folder where the .cpp and .h files are
-	this->_sPlayer = Sprite(graphics, "Content/Sprites/MyChar.png", 0, 0, 16, 16, 100, 100);
+	this->_asPlayer = AnimatedSprite(graphics, "Content/Sprites/MyChar.png", 0, 0, 16, 16, 100, 100, 100);
+	this->_asPlayer.SetupAnimation();
+	this->_asPlayer.PlayAnimation("RunRight");
 
 	int LAST_UPDATE_TIME = SDL_GetTicks();	//get timing of first frame
 
@@ -95,10 +97,10 @@ void Game::GameLoop() {
 void Game::Draw(Graphics& graphics) {
 	graphics.Clear();
 
-	this->_sPlayer.Draw(graphics, 100, 100);
+	this->_asPlayer.Draw(graphics, 100, 100);
 	graphics.Render();
 }
 
-void Game::Update(float elapsedtime) {
-
+void Game::Update(float elapsedTime) {
+	this->_asPlayer.Update(elapsedTime);
 }
