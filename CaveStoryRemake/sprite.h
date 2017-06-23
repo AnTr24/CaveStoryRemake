@@ -25,8 +25,9 @@ public:
 protected:
 	SDL_Rect _sourceRect;
 	SDL_Texture* _spriteSheet;
+	float _x, _y;
 
 private:
-	float _x, _y;
+	
 };
 #endif	//end of #include guard

@@ -47,9 +47,7 @@ void Game::GameLoop() {
 
 	//player spritesheet is 16x16 per sprite, floats are for location on screen
 	//for visual studio, filepath starts at the folder where the .cpp and .h files are
-	this->_asPlayer = AnimatedSprite(graphics, "Content/Sprites/MyChar.png", 0, 0, 16, 16, 100, 100, 100);
-	this->_asPlayer.SetupAnimation();
-	this->_asPlayer.PlayAnimation("RunLeft");
+	this->_player = Player(graphics, 100, 100);
 
 	int LAST_UPDATE_TIME = SDL_GetTicks();	//get timing of first frame
 
@@ -82,6 +80,19 @@ void Game::GameLoop() {
 		if (input.WasKeyPressed(SDL_SCANCODE_ESCAPE) == true) {
 			return;
 		}
+		//Left Key - Moves player left
+		else if (input.WasKeyPressed(SDL_SCANCODE_LEFT) == true) {
+			this->_player.MoveLeft();
+		}
+		//Right Key - Moves player right
+		else if (input.WasKeyPressed(SDL_SCANCODE_RIGHT) == true) {
+			this->_player.MoveRight();
+		}
+
+		//if neither horizontal move keys are being held, stop moving
+		if (!input.IsKeyHeld(SDL_SCANCODE_LEFT) && !input.IsKeyHeld(SDL_SCANCODE_RIGHT)) {
+			this->_player.StopMoving();
+		}
 
 		const int CURRENT_TIME_MS = SDL_GetTicks();	//get frame end time
 		int ELAPSED_TIME_MS = CURRENT_TIME_MS - LAST_UPDATE_TIME;	//find the elapsed time between frame start & end
@@ -97,10 +108,10 @@ void Game::GameLoop() {
 void Game::Draw(Graphics& graphics) {
 	graphics.Clear();
 
-	this->_asPlayer.Draw(graphics, 100, 100);
+	this->_player.Draw(graphics);
 	graphics.Render();
 }
 
 void Game::Update(float elapsedTime) {
-	this->_asPlayer.Update(elapsedTime);
+	this->_player.Update(elapsedTime);
 }

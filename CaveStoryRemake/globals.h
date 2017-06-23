@@ -10,11 +10,19 @@ Description:	Holds global variables for the game. SPOOKY STUFF
 //includes
 
 namespace globals {
-	const int SCREEN_WIDTH = 640;
+	const int SCREEN_WIDTH = 640;	//Cavestory's default window is 640 x 480
 	const int SCREEN_HEIGHT = 480;
 
-	const float SPRITE_SCALE = 2.0f;
+	const float SPRITE_SCALE = 2.0f;	//sprites in cavestory seem to be scaled by x2
 }
+
+//represents the direction the character is facing
+enum Direction {
+	LEFT,
+	RIGHT,
+	UP,
+	DOWN
+};
 
 //for pairs of data
 struct Vector2 {

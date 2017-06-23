@@ -7,7 +7,7 @@ Description:	Header file for Game class.
 #ifndef GAME_H
 #define GAME_H
 
-#include "animatedsprite.h";
+#include "player.h";
 
 class Graphics;
 
@@ -20,7 +20,7 @@ private:
 	void Draw(Graphics& graphics);
 	void Update(float elapsedTime);
 
-	AnimatedSprite _asPlayer;	//player sprite
+	Player _player;	//player sprite
 };
 
 #endif 

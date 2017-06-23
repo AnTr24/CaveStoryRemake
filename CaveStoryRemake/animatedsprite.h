@@ -33,10 +33,7 @@ public:
 	//void Draw - Draws sprite to screen
 	void Draw(Graphics &graphics, int x, int y);
 
-	/*	virtual void SetupAnimation
-	*	A required function that sets up the sprite's animations
-	*/
-	virtual void SetupAnimation();
+
 
 protected:
 	double _dTimeToUpdate;
@@ -45,8 +42,11 @@ protected:
 
 	/*void AddAnimation
 	*Adds an animation to the map of animations for the sprite
+	*Note to self: C style arrays like: Vector2 frameLocations[] do not contain the info on # of elements/length of array
+	*..use std::array(closer to C#) for fixed sizes or std::vectors(like C# lsits) for unknown sizes
+	*here, we'll use a std::vector since animations can have different number of frames...
 	*/
-	void AddAnimation(Vector2 frameLocations[], std::string name, int width, int height, Vector2 offset);
+	void AddAnimation(std::vector<Vector2> frameLocations, std::string name, int width, int height, Vector2 offset);
 
 	/*void ResetAnimation
 	*Resets all animation associated with sprite
@@ -65,9 +65,14 @@ protected:
 
 	/*virtual void AnimationDone
 	*Logic that occurs when animation finishes
+	*Note: adding the = 0 means that the function is now pure virtual, can't be implemented in this class
 	*/
-	virtual void AnimationDone(std::string currentAnimation);
+	virtual void AnimationDone(std::string currentAnimation) = 0;
 
+	/*	virtual void SetupAnimation
+	*	A required function that sets up the sprite's animations
+	*/
+	virtual void SetupAnimation() = 0;
 
 private:
 	std::map<std::string, std::vector<SDL_Rect>> _mAnimations;

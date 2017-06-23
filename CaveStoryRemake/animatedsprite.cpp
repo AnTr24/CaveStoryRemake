@@ -97,17 +97,6 @@ void AnimatedSprite::Draw(Graphics &graphics, int x, int y) {
 	}
 }
 
-/*	virtual void SetupAnimation
-*	A required function that sets up the sprite's animations
-*/
-void AnimatedSprite::SetupAnimation() {
-	//temporary....should be inherited to a Player animatedsprite
-	Vector2 runLeftFrames[] = { Vector2(0,0), Vector2(16,0), Vector2(0,0), Vector2(32,0) };
-	Vector2 runRightFrames[] = { Vector2(0,16), Vector2(16,16), Vector2(0,16), Vector2(32,16) };
-
-	this->AddAnimation(runLeftFrames, "RunLeft", 16, 16, Vector2(0, 0));
-	this->AddAnimation(runRightFrames, "RunRight", 16, 16, Vector2(0, 0));
-}
 //OLD WAY OF ADDING ANIMATION
 /*void AddAnimation
 *Adds an animation to the map of animations for the sprite
@@ -130,12 +119,13 @@ void AnimatedSprite::AddAnimation(int frames, int x, int y, std::string name, in
 }
 */
 
-void AnimatedSprite::AddAnimation(Vector2 frameLocations[], std::string name, int width, int height, Vector2 offset)
+void AnimatedSprite::AddAnimation(std::vector<Vector2> frameLocations, std::string name, int width, int height, Vector2 offset)
 {
 std::vector<SDL_Rect> rectangles;	//cuts up sprite sheet to the frames we need
 
-//loop through the spritesheet to get each frame
-for (int i = 0; i < sizeof(frameLocations); i++)
+//error for array size..
+//loop through the Vector2 locations to get each frame from the spritesheet  
+for (int i = 0; i < (int)frameLocations.size(); i++)
 {
 SDL_Rect newRect = { frameLocations[i].x, frameLocations[i].y, width, height, };
 rectangles.push_back(newRect);
@@ -169,10 +159,11 @@ void AnimatedSprite::StopAnimation() {
 void AnimatedSprite::SetVisible(bool visible) {
 	this->_bVisible = visible;
 }
-
-/*virtual void AnimationDone
+/*
+virtual void AnimationDone
 *Logic that occurs when animation finishes
-*/
+
 void AnimatedSprite::AnimationDone(std::string currentAnimation) {
 
 }
+*/
