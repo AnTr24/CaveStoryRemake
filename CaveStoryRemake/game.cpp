@@ -49,7 +49,7 @@ void Game::GameLoop() {
 	//for visual studio, filepath starts at the folder where the .cpp and .h files are
 	this->_asPlayer = AnimatedSprite(graphics, "Content/Sprites/MyChar.png", 0, 0, 16, 16, 100, 100, 100);
 	this->_asPlayer.SetupAnimation();
-	this->_asPlayer.PlayAnimation("RunRight");
+	this->_asPlayer.PlayAnimation("RunLeft");
 
 	int LAST_UPDATE_TIME = SDL_GetTicks();	//get timing of first frame
 

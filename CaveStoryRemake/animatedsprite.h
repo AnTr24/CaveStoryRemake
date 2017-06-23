@@ -46,7 +46,7 @@ protected:
 	/*void AddAnimation
 	*Adds an animation to the map of animations for the sprite
 	*/
-	void AddAnimation(int frames, int x, int y, std::string name, int width, int height, Vector2 offset);
+	void AddAnimation(Vector2 frameLocations[], std::string name, int width, int height, Vector2 offset);
 
 	/*void ResetAnimation
 	*Resets all animation associated with sprite
