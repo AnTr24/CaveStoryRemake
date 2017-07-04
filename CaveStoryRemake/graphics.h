@@ -7,6 +7,7 @@ Description:	Header file for Graphics class.
 #ifndef GRAPHICS_H
 #define GRAPHICS_H
 
+#include <SDL.h>
 #include <map>
 #include <string>
 

@@ -8,6 +8,7 @@ Description:	Header file for Game class.
 #define GAME_H
 
 #include "player.h";
+#include "level.h"
 
 class Graphics;
 
@@ -21,6 +22,8 @@ private:
 	void Update(float elapsedTime);
 
 	Player _player;	//player sprite
+
+	Level _level;	//defines the map/level
 };
 
 #endif 

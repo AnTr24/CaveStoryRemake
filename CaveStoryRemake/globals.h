@@ -32,7 +32,7 @@ struct Vector2 {
 
 	Vector2(int x, int y): x(x), y(y){}
 
-	Vector2 Zero() {
+	static Vector2 Zero() {
 		return Vector2(0,0);
 	}
 };

@@ -49,6 +49,8 @@ void Game::GameLoop() {
 	//for visual studio, filepath starts at the folder where the .cpp and .h files are
 	this->_player = Player(graphics, 100, 100);
 
+	this->_level = Level("map 1", Vector2(100, 100), graphics);
+
 	int LAST_UPDATE_TIME = SDL_GetTicks();	//get timing of first frame
 
 	//Game loop Inits END***************************************************************************
@@ -108,10 +110,14 @@ void Game::GameLoop() {
 void Game::Draw(Graphics& graphics) {
 	graphics.Clear();
 
+	//Ordering of draws is important for layering, i.e level should be drawn before player
+	this->_level.Draw(graphics);
 	this->_player.Draw(graphics);
+
 	graphics.Render();
 }
 
 void Game::Update(float elapsedTime) {
 	this->_player.Update(elapsedTime);
+	this->_level.Update(elapsedTime);
 }
