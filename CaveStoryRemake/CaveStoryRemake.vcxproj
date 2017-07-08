@@ -126,6 +126,7 @@
     <ClCompile Include="player.cpp" />
     <ClCompile Include="skeleton.cpp" />
     <ClCompile Include="sprite.cpp" />
+    <ClCompile Include="tinyxml2.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="animatedsprite.h" />
@@ -137,6 +138,7 @@
     <ClInclude Include="player.h" />
     <ClInclude Include="skeletonHeader.h" />
     <ClInclude Include="sprite.h" />
+    <ClInclude Include="tinyxml2.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
