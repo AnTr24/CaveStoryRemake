@@ -28,6 +28,7 @@ Graphics::Graphics() {
 //and deconstructor
 Graphics::~Graphics() {
 	SDL_DestroyWindow(this->_window);
+	SDL_DestroyRenderer(this->_renderer);
 }
 /*************************************************************************
 Functions

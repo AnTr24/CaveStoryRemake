@@ -12,7 +12,7 @@ Description:	Header file for thing class.
 //Class definition
 class Thing {
 public:
-	Thing();	//constructor
+	Thing();	// default constructor
 	~Thing();	//desctructor
 private:
 };

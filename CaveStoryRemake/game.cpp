@@ -49,7 +49,7 @@ void Game::GameLoop() {
 	//for visual studio, filepath starts at the folder where the .cpp and .h files are
 	this->_player = Player(graphics, 100, 100);
 
-	this->_level = Level("map 1", Vector2(100, 100), graphics);
+	this->_level = Level("Map 1", Vector2(100, 100), graphics);
 
 	int LAST_UPDATE_TIME = SDL_GetTicks();	//get timing of first frame
 
