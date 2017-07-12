@@ -1,6 +1,6 @@
 /*************************************************************************
 File name:		player.h
-Description:	Header file for thing class.
+Description:	Header file for player class.
 **************************************************************************/
 
 //#include guard.  Prevents double definitions
@@ -17,7 +17,7 @@ class Graphics;
 class Player : public AnimatedSprite {
 public:
 	Player();	//default constructor
-	Player(Graphics &graphics, float x, float y);	//constructor
+	Player(Graphics &graphics, Vector2 spawnPoint);	//constructor
 	~Player();	//desctructor
 
 	//Standard...
@@ -47,9 +47,19 @@ public:
 	*/
 	virtual void SetupAnimation();
 
+	//void HandleTileCollisions
+	//handles a detected collision with ALL tiles the palyer is colliding with
+	void HandleTileCollisions(std::vector<Rectangle> &others);
+
+	//Getter functions to get X or Y coordinates
+	const float GetX() const;
+	const float GetY() const;
+
 private:
 	float _dx, _dy;	//change in x and y positions
 
-	Direction _facing;
+	Direction _facing;	//determines direction player is facing
+
+	bool _bGrounded;	//flag for being on ground or in air
 };
 #endif	//end of #include guard

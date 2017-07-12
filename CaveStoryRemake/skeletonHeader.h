@@ -1,6 +1,6 @@
 /*************************************************************************
 File name:		thing.h
-Description:	Header file for thing class.
+Description:	
 **************************************************************************/
 
 //#include guard.  Prevents double definitions
@@ -8,6 +8,8 @@ Description:	Header file for thing class.
 #define THING_H
 
 //includes
+
+//declarations
 
 //Class definition
 class Thing {

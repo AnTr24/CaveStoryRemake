@@ -12,6 +12,9 @@ Includes
 
 namespace player_constants {
 	const float WALK_SPEED = 0.2f;
+
+	const float GRAVITY = 0.002f;
+	const float GRAVITY_CAP = 0.8f;
 }
 
 
@@ -21,8 +24,12 @@ Constructors and Deconstructors
 Player::Player() {}	//default constructor
 
 //custom constructor
-Player::Player(Graphics &graphics, float x, float y) :
-	AnimatedSprite(graphics, "Content/Sprites/MyChar.png", 0, 0, 16, 16, x, y, 100)
+Player::Player(Graphics &graphics, Vector2 spawnPoint) :
+	AnimatedSprite(graphics, "Content/Sprites/MyChar.png", 0, 0, 16, 16, spawnPoint.x, spawnPoint.y, 100),
+	_dx(0),
+	_dy(0),
+	_facing(RIGHT),
+	_bGrounded(false)
 {
 	graphics.LoadImage("Content/Sprites/MyChar.png");
 
@@ -40,8 +47,16 @@ void Player::Draw(Graphics &graphics) {
 }
 
 void Player::Update(float elapsedTime) {
+	//Apply gravity
+	if (this->_dy <= player_constants::GRAVITY_CAP) {
+		this->_dy += player_constants::GRAVITY*elapsedTime;
+	}
+
 	//Move by dx(horizontal movement)
 	this->_x += this->_dx * elapsedTime;
+
+	//Move by dy(vertical movement)
+	this->_y += this->_dy * elapsedTime;
 
 	AnimatedSprite::Update(elapsedTime);
 }
@@ -78,6 +93,17 @@ void Player::SetupAnimation() {
 */
 void Player::AnimationDone(std::string currentAnimation) {}
 
+//GetX - getter function retrieves the X coordinate
+const float Player::GetX() const {
+	return this->_x;
+}
+
+
+//GetY - getter function retrieves the Y coordinate
+const float Player::GetY() const {
+	return this->_y;
+}
+
 //void MoveLeft
 //Moves the player left by -dx
 void Player::MoveLeft() {
@@ -99,4 +125,35 @@ void Player::MoveRight() {
 void Player::StopMoving() {
 	this->_dx = 0;
 	this->PlayAnimation(this->_facing == RIGHT ? "IdleRight" : "IdleLeft");
+}
+
+//void HandleTileCollisions
+//handles a detected collision with ALL tiles the palyer is colliding with
+void Player::HandleTileCollisions(std::vector<Rectangle> &others) {
+	//Figure out what side the collision happened on and move the player accordingly
+	for (int i = 0; i < others.size(); i++) {
+		sides::Side collisionSide = Sprite::GetCollisionSide(others.at(i));
+		if (collisionSide != sides::NONE) {
+			switch (collisionSide)
+			{
+			case sides::LEFT:
+				this->_x = others.at(i).GetRight() + 1;
+				break;
+			case sides::RIGHT:
+				this->_x = others.at(i).GetLeft() - this->_rBoundingBox.GetWidth();
+				break;
+			case sides::TOP:
+				this->_y = others.at(i).GetBottom();
+				this->_dy = 0;
+				break;
+			case sides::BOTTOM:
+				this->_y = others.at(i).GetTop() - this->_rBoundingBox.GetHeight();
+				this->_dy = 0;
+				this->_bGrounded = true;
+				break;
+			}
+		}
+	}
+
+
 }

@@ -41,9 +41,23 @@ void Level::Update(int elapsedTime) {
 
 void Level::Draw(Graphics &graphics) {
 	//loop throguh all the loaded tiles and draw them
-	for(int i = 0; i< this->_vTileList.size(); i++){ 
+	for (int i = 0; i < this->_vTileList.size(); i++) {
 		this->_vTileList.at(i).Draw(graphics);
 	}
+}
+
+//Checks if tile collided with something
+std::vector<Rectangle> Level::CheckTileCollisions(const Rectangle &other) {
+	std::vector<Rectangle> others;	//placeholder for colldied objects
+
+	//Check if the rectangle collides with any collidable objects
+	for (int i = 0; i < this->_vCollisionRects.size(); i++) {
+		if (this->_vCollisionRects.at(i).CollidesWidth(other)) {
+			others.push_back(this->_vCollisionRects.at(i));
+		}
+	}
+
+	return others;
 }
 
 /*void LoadMap
@@ -69,7 +83,7 @@ void Level::LoadMap(std::string mapName, Graphics &graphics) {
 	//Now get the width and height of the whole map and store it
 	//temp variables
 	int width = 0;
-	int height = 0; 
+	int height = 0;
 
 	mapNode->QueryIntAttribute("width", &width);
 	mapNode->QueryIntAttribute("height", &height);
@@ -77,7 +91,7 @@ void Level::LoadMap(std::string mapName, Graphics &graphics) {
 
 	//Now get the width and height of the tiles and store it
 	//temp variables
-	int tileWidth = 0; 
+	int tileWidth = 0;
 	int tileHeight = 0;
 
 	mapNode->QueryIntAttribute("tilewidth", &tileWidth);
@@ -94,7 +108,6 @@ void Level::LoadMap(std::string mapName, Graphics &graphics) {
 			//temp variables
 			int firstgid;
 			const char* source = pTileset->FirstChildElement("image")->Attribute("source");
-			char* path;
 
 			//Get the path to the tileset source
 			std::stringstream ss;
@@ -162,7 +175,7 @@ void Level::LoadMap(std::string mapName, Graphics &graphics) {
 
 									//Get the position of the tile in the tileset...
 									int tilesetWidth, tilesetHeight;
-									//Query the tileset tog et its width and height
+									//Query the tileset to get its width and height
 									//SDL_QueryTexture will define the supplied w and h pointers
 									SDL_QueryTexture(tls.Texture, NULL, NULL, &tilesetWidth, &tilesetHeight);
 
@@ -193,4 +206,67 @@ void Level::LoadMap(std::string mapName, Graphics &graphics) {
 			pLayer = pLayer->NextSiblingElement("layer"); //to the next layer!
 		}
 	}
+
+	//Parse out the collisions
+	//tinyxml2 stores them in "objectgroups"
+	XMLElement* pObjectGroup = mapNode->FirstChildElement("objectgroup");
+	if (pObjectGroup != NULL) {
+		while (pObjectGroup) {
+			//check if the name of the objectgroup
+			const char* name = pObjectGroup->Attribute("name");
+			std::stringstream ss;
+			ss << name;
+			if (ss.str() == "collisions") {
+				//found the level collision objects
+				XMLElement* pObject = pObjectGroup->FirstChildElement("object");
+				if (pObject != NULL) {
+					while (pObject) {
+						//now parse the collision object into collision rectangles
+						float x, y, width, height;
+						x = pObject->FloatAttribute("x");
+						y = pObject->FloatAttribute("y");
+						width = pObject->FloatAttribute("width");
+						height = pObject->FloatAttribute("height");
+						this->_vCollisionRects.push_back(Rectangle(
+							std::ceil(x) * globals::SPRITE_SCALE, 
+							std::ceil(y) * globals::SPRITE_SCALE,
+							std::ceil(width) * globals::SPRITE_SCALE,
+							std::ceil(height) * globals::SPRITE_SCALE
+						));
+						
+
+						pObject = pObject->NextSiblingElement("object");
+					}
+				}
+			}
+			//Other objectgroups go here with an else if(ss.str()=="thing"){}
+			else if (ss.str() == "spawn points") {
+				XMLElement* pObject = pObjectGroup->FirstChildElement("object");
+				if (pObject != NULL) {
+					while (pObject) {
+						float x = pObject->FloatAttribute("x");
+						float y = pObject->FloatAttribute("y");
+						const char* name = pObject->Attribute("name");
+						std::stringstream ss;
+						ss << name;
+						if (ss.str() == "player") {
+							this->_v2SpawnPoint = Vector2(std::ceil(x)*globals::SPRITE_SCALE, 
+								std::ceil(y)*globals::SPRITE_SCALE);
+						}
+
+
+						pObject = pObject->NextSiblingElement("object");
+					}
+				}
+			}
+
+			pObjectGroup = pObjectGroup->NextSiblingElement("objectgroup");
+		}
+	}
+}
+
+//const Vector2 GetPlayerSpawnPoint
+//Retrieves the location of player spawn
+const Vector2 Level::GetPlayerSpawnPoint() const {
+	return this->_v2SpawnPoint;
 }

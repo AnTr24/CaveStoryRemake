@@ -1,6 +1,6 @@
 /*************************************************************************
 File name:		tile.h
-Description:	Header file for thing class.
+Description:	Represent's a a square "block/tile" in a map
 **************************************************************************/
 
 //#include guard.  Prevents double definitions

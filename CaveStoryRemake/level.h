@@ -1,6 +1,6 @@
 /*************************************************************************
 File name:		level.h
-Description:	Header file for thing class.
+Description:	Header file for level class.
 **************************************************************************/
 
 //#include guard.  Prevents double definitions
@@ -12,6 +12,7 @@ Description:	Header file for thing class.
 #include <string>
 #include <vector>
 #include "tile.h"
+#include "rectangle.h"
 
 class Graphics;
 struct SDL_Texture;
@@ -29,6 +30,13 @@ public:
 	void Update(int elapsedTime);
 	void Draw(Graphics &graphics);
 
+	//Checks if tile collided with something
+	std::vector<Rectangle> CheckTileCollisions(const Rectangle &other);
+
+	//const Vector2 GetPlayerSpawnPoint
+	//Retrieves the location of player spawn
+	const Vector2 GetPlayerSpawnPoint() const;
+
 private:
 	std::string _sMapName;
 	Vector2 _v2SpawnPoint;
@@ -38,8 +46,9 @@ private:
 
 	SDL_Texture* _backgroundTexture;
 
-	std::vector<Tile> _vTileList;
-	std::vector<Tileset> _vTilesets;
+	std::vector<Tile> _vTileList;			//holds tiles to be drawn
+	std::vector<Tileset> _vTilesets;		//holds loaded tilesets
+	std::vector<Rectangle>_vCollisionRects;	//holds collision objects
 
 	/*void LoadMap
 	*Loads a map

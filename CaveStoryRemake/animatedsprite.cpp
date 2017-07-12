@@ -19,7 +19,7 @@ AnimatedSprite::AnimatedSprite(Graphics &graphics, const std::string &filePath, 
 	int width, int height, float posX, float posY, float timeToUpdate)
 	: Sprite(graphics, filePath, sourceX, sourceY, width, height, posX, posY),
 	_iFrameIndex(0),
-	_dTimeElapsed(0),	//visual studio will initialize it to  -9.E61 be default(sprite will never update)..set it to 0!
+	_dTimeElapsed(0),	//visual studio will initialize it to  -9.E61 by default(sprite will never update)..set it to 0!
 	_dTimeToUpdate(timeToUpdate),
 	_bVisible(true),
 	_bCurrentAnimationOnce(false),
