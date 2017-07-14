@@ -8,12 +8,16 @@ Includes
 **************************************************************************/
 #include "level.h"
 #include "graphics.h"
-#include <SDL.h>
 #include "globals.h"
+#include "utils.h"
+
 #include "tinyxml2.h"
+
+#include <SDL.h>
 #include <sstream>
 #include <algorithm>
 #include <cmath>
+
 
 using namespace tinyxml2;	//similar to scoping: (std::___); will give access to all the tinyxml2 functions
 
@@ -46,7 +50,7 @@ void Level::Draw(Graphics &graphics) {
 	}
 }
 
-//Checks if tile collided with something
+//Checks if <other> object collided with a tile
 std::vector<Rectangle> Level::CheckTileCollisions(const Rectangle &other) {
 	std::vector<Rectangle> others;	//placeholder for colldied objects
 
@@ -60,6 +64,18 @@ std::vector<Rectangle> Level::CheckTileCollisions(const Rectangle &other) {
 	return others;
 }
 
+//Checks if <other> object collided with a slope
+std::vector<Slope> Level::CheckSlopeCollisions(const Rectangle &other){
+	std::vector<Slope> others;
+	for (int i = 0; i < this->_vSlopes.size(); i++) {
+		if (this->_vSlopes.at(i).CollidesWith(other)) {
+			others.push_back(this->_vSlopes.at(i));
+		}
+	}
+
+	return others;
+}
+
 /*void LoadMap
 *Loads a map
 */
@@ -67,12 +83,12 @@ void Level::LoadMap(std::string mapName, Graphics &graphics) {
 	//parse the .tmx file
 	//note:tinyxml2 runs on C, so no strings, just chars
 	XMLDocument doc;	//represents the .tmx document
-	std::stringstream ss;	//to build a filepath string to the tmx doc
+	std::stringstream ssPath;	//to build a filepath string to the tmx doc
 
-	ss << "Content/Maps/" << mapName << ".tmx";	//create the filepath
+	ssPath << "Content/Maps/" << mapName << ".tmx";	//create the filepath
 	//Ex: pass in "Map 1" mapName and we get Content/Maps/Map 1.tmx
 
-	doc.LoadFile(ss.str().c_str());	//doc.LoadFile takes a const char* so we have to convert the stirng to a c string(char)
+	doc.LoadFile(ssPath.str().c_str());	//doc.LoadFile takes a const char* so we have to convert the stirng to a c string(char)
 
 	//check the .tmx file for the element names
 	//first element to grab is the "map"
@@ -110,14 +126,14 @@ void Level::LoadMap(std::string mapName, Graphics &graphics) {
 			const char* source = pTileset->FirstChildElement("image")->Attribute("source");
 
 			//Get the path to the tileset source
-			std::stringstream ss;
-			ss << "Content/Tilesets/" << source;
+			std::stringstream ssSource;
+			ssSource << "Content/Tilesets/" << source;
 
 			//Grab the first gid
 			pTileset->QueryIntAttribute("firstgid", &firstgid);
 
 			//Create the SDL texture of the tileset .png
-			SDL_Texture* tex = SDL_CreateTextureFromSurface(graphics.GetRenderer(), graphics.LoadImage(ss.str()));
+			SDL_Texture* tex = SDL_CreateTextureFromSurface(graphics.GetRenderer(), graphics.LoadImage(ssSource.str()));
 
 			//Add to vector of loaded tilesets
 			this->_vTilesets.push_back(Tileset(tex, firstgid));
@@ -214,9 +230,9 @@ void Level::LoadMap(std::string mapName, Graphics &graphics) {
 		while (pObjectGroup) {
 			//check if the name of the objectgroup
 			const char* name = pObjectGroup->Attribute("name");
-			std::stringstream ss;
-			ss << name;
-			if (ss.str() == "collisions") {
+			std::stringstream ssCollisions;
+			ssCollisions << name;
+			if (ssCollisions.str() == "collisions") {
 				//found the level collision objects
 				XMLElement* pObject = pObjectGroup->FirstChildElement("object");
 				if (pObject != NULL) {
@@ -228,29 +244,75 @@ void Level::LoadMap(std::string mapName, Graphics &graphics) {
 						width = pObject->FloatAttribute("width");
 						height = pObject->FloatAttribute("height");
 						this->_vCollisionRects.push_back(Rectangle(
-							std::ceil(x) * globals::SPRITE_SCALE, 
+							std::ceil(x) * globals::SPRITE_SCALE,
 							std::ceil(y) * globals::SPRITE_SCALE,
 							std::ceil(width) * globals::SPRITE_SCALE,
 							std::ceil(height) * globals::SPRITE_SCALE
 						));
-						
+
 
 						pObject = pObject->NextSiblingElement("object");
 					}
 				}
 			}
-			//Other objectgroups go here with an else if(ss.str()=="thing"){}
-			else if (ss.str() == "spawn points") {
+			//Other objectgroups go here with an else if(ssCollisions.str()=="thing"){}
+			//parse slopes
+			else if (ssCollisions.str() == "slopes") {	//object group "slopes"
+				XMLElement* pObject = pObjectGroup->FirstChildElement("object");
+				if (pObject != NULL) {
+					while (pObject) {
+						XMLElement* pPolyline = pObject->FirstChildElement("polyline");
+						std::vector<Vector2> vPoints;	//holds all the points in the object
+
+						//Grab the first point in the slope
+						Vector2 p1;
+						p1 = Vector2(std::ceil(pObject->FloatAttribute("x")), std::ceil(pObject->FloatAttribute("y")));
+
+						//Now to get the other point(s)
+						//Polyline values in the .tmx indicate the offset added to the initial (x,y) attributes to get the next set of points
+						if (pPolyline != NULL) {
+							std::vector<std::string> pairs;
+							const char* pointString = pPolyline->Attribute("points");
+							std::stringstream ssPoints;
+							ssPoints << pointString;
+
+							Utils::Split(ssPoints.str(), pairs, ' ');
+							//Now <pairs> has been populated with the offset pairs of values
+							//Loop through the pairs and add them to the initial (x,y) to get the point coordinates
+							//Now split them into Vector2s and then store them in our points vector
+							for (int i = 0; i < pairs.size(); i++) {
+								std::vector<std::string> pointOffset;
+								Utils::Split(pairs.at(i), pointOffset, ',');
+								//ps[0] will now have x offset. ps[1] with y offset
+								vPoints.push_back(Vector2(
+									std::stoi(pointOffset.at(0)) + p1.x,
+									std::stoi(pointOffset.at(1)) + p1.y));
+							}
+						}
+
+						//now to scale points to game size and create the slopes
+						for (int i = 0; vPoints.size() != 0 && i < vPoints.size() - 1; i++) {
+							Vector2 p1 = Vector2(vPoints.at(i).x * globals::SPRITE_SCALE, vPoints.at(i).y * globals::SPRITE_SCALE);
+							Vector2 p2 = Vector2(vPoints.at(i + 1).x * globals::SPRITE_SCALE, vPoints.at(i + 1).y * globals::SPRITE_SCALE);
+							_vSlopes.push_back(Slope(p1, p2));
+						}
+
+						pObject = pObject->NextSiblingElement("object");
+					}
+				}
+			}
+			//parse spawn points
+			else if (ssCollisions.str() == "spawn points") {	//object group "spawn points"
 				XMLElement* pObject = pObjectGroup->FirstChildElement("object");
 				if (pObject != NULL) {
 					while (pObject) {
 						float x = pObject->FloatAttribute("x");
 						float y = pObject->FloatAttribute("y");
 						const char* name = pObject->Attribute("name");
-						std::stringstream ss;
-						ss << name;
-						if (ss.str() == "player") {
-							this->_v2SpawnPoint = Vector2(std::ceil(x)*globals::SPRITE_SCALE, 
+						std::stringstream ssPlayer;
+						ssPlayer << name;
+						if (ssPlayer.str() == "player") {
+							this->_v2SpawnPoint = Vector2(std::ceil(x)*globals::SPRITE_SCALE,
 								std::ceil(y)*globals::SPRITE_SCALE);
 						}
 

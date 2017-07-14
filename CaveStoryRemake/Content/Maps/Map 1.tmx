@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" tiledversion="1.0.2" orientation="orthogonal" renderorder="right-down" width="20" height="16" tilewidth="16" tileheight="16" nextobjectid="18">
+<map version="1.0" tiledversion="1.0.2" orientation="orthogonal" renderorder="right-down" width="20" height="16" tilewidth="16" tileheight="16" nextobjectid="41">
  <tileset firstgid="1" name="PrtCave" tilewidth="16" tileheight="16" tilecount="80" columns="16">
   <image source="../Tilesets/PrtCave.png" width="256" height="80"/>
  </tileset>
@@ -665,8 +665,38 @@
   <object id="14" x="238.052" y="98.6604" width="11.4651" height="32.2834"/>
   <object id="15" x="114.35" y="185.252" width="93.833" height="13.2754"/>
   <object id="16" x="206.372" y="161.719" width="7.84456" height="25.6457"/>
+  <object id="24" x="383" y="86"/>
+  <object id="33" x="110.5" y="17" width="34.5" height="15.5"/>
+  <object id="34" x="81.75" y="32.25" width="31.5" height="17.5"/>
  </objectgroup>
- <objectgroup color="#00ff00" name="spawn points">
+ <objectgroup name="slopes">
+  <object id="28" x="186.545" y="185.273">
+   <polyline points="0,0 20,-14.3636"/>
+  </object>
+  <object id="29" x="113.364" y="175.545">
+   <polyline points="0,0 21.0909,9.72727"/>
+  </object>
+  <object id="30" x="82.3636" y="113.273">
+   <polyline points="0,0 30.5455,12.7273"/>
+  </object>
+  <object id="31" x="159.273" y="64.9091">
+   <polyline points="0,0 14.7273,-3.63636"/>
+  </object>
+  <object id="32" x="225.818" y="128.545">
+   <polyline points="0,0 12.0909,-4.63636"/>
+  </object>
+  <object id="35" x="82" y="62.25">
+   <polyline points="0,0 28,-12.75"/>
+  </object>
+  <object id="36" x="158.5" y="31">
+   <polyline points="0,0 15.5,7.5"/>
+  </object>
+  <object id="39" x="105.667" y="149.333" width="44.3333" height="23.6667"/>
+  <object id="40" x="190.667" y="94">
+   <polyline points="0,0 20,-3.33333 47,8.66667"/>
+  </object>
+ </objectgroup>
+ <objectgroup color="#00ff00" name="spawn points" visible="0">
   <object id="17" name="player" x="158.337" y="136.764" width="2.57298" height="2.77091">
    <ellipse/>
   </object>

@@ -13,6 +13,7 @@ Description:	Header file for level class.
 #include <vector>
 #include "tile.h"
 #include "rectangle.h"
+#include "slope.h"
 
 class Graphics;
 struct SDL_Texture;
@@ -30,8 +31,9 @@ public:
 	void Update(int elapsedTime);
 	void Draw(Graphics &graphics);
 
-	//Checks if tile collided with something
+	//Checks if <other> object collided with something
 	std::vector<Rectangle> CheckTileCollisions(const Rectangle &other);
+	std::vector<Slope> CheckSlopeCollisions(const Rectangle &other);
 
 	//const Vector2 GetPlayerSpawnPoint
 	//Retrieves the location of player spawn
@@ -49,6 +51,7 @@ private:
 	std::vector<Tile> _vTileList;			//holds tiles to be drawn
 	std::vector<Tileset> _vTilesets;		//holds loaded tilesets
 	std::vector<Rectangle>_vCollisionRects;	//holds collision objects
+	std::vector<Slope> _vSlopes;
 
 	/*void LoadMap
 	*Loads a map

@@ -12,6 +12,7 @@ Includes
 
 namespace player_constants {
 	const float WALK_SPEED = 0.2f;
+	const float JUMP_SPEED = 0.7f;
 
 	const float GRAVITY = 0.002f;
 	const float GRAVITY_CAP = 0.8f;
@@ -47,6 +48,7 @@ void Player::Draw(Graphics &graphics) {
 }
 
 void Player::Update(float elapsedTime) {
+
 	//Apply gravity
 	if (this->_dy <= player_constants::GRAVITY_CAP) {
 		this->_dy += player_constants::GRAVITY*elapsedTime;
@@ -127,6 +129,16 @@ void Player::StopMoving() {
 	this->PlayAnimation(this->_facing == RIGHT ? "IdleRight" : "IdleLeft");
 }
 
+//void Jump
+//Starts jumping
+void Player::Jump() {
+	if (this->_bGrounded) {
+		this->_dy = 0;
+		this->_dy -= player_constants::JUMP_SPEED;
+		this->_bGrounded = false;
+	}
+}
+
 //void HandleTileCollisions
 //handles a detected collision with ALL tiles the palyer is colliding with
 void Player::HandleTileCollisions(std::vector<Rectangle> &others) {
@@ -143,8 +155,13 @@ void Player::HandleTileCollisions(std::vector<Rectangle> &others) {
 				this->_x = others.at(i).GetLeft() - this->_rBoundingBox.GetWidth();
 				break;
 			case sides::TOP:
-				this->_y = others.at(i).GetBottom();
 				this->_dy = 0;
+				this->_y = others.at(i).GetBottom() + 1;
+
+				if (this->_bGrounded) {
+					this->_dx = 0;
+					this->_x -= _facing == RIGHT ? 0.5f : -0.5;
+				}
 				break;
 			case sides::BOTTOM:
 				this->_y = others.at(i).GetTop() - this->_rBoundingBox.GetHeight();
@@ -156,4 +173,38 @@ void Player::HandleTileCollisions(std::vector<Rectangle> &others) {
 	}
 
 
+}
+
+//void HandleSlopeCollisions
+//handles a detected collision with ALL slopes the player is colliding with
+void Player::HandleSlopeCollisions(std::vector<Slope> &others) {
+	//loop through to check each slope
+	for (int i = 0; i < others.size(); i++) {
+		//Calculate where on the slope the player's bottom center is touching
+		//then use y=mx+b to determine the y pos to place him at
+		//First calculate "b"(slope intercept) using one of the points
+		//(b = y - mx)
+		int b = (others.at(i).GetP1()).y - others.at(i).GetSlope() * fabs(others.at(i).GetP1().x);
+
+		//Now get player's center x
+		int centerX = this->_rBoundingBox.GetCenterX();
+
+		//now pass the newly found x and b into the y=mx+b equation
+		//to get the new y position
+		int newY = others.at(i).GetSlope() * centerX + b - 8;	//8 is a temporary fix
+		//-8 moves the player a bit higher since we lost sound accuracy due to rounding?
+		//or perhaps due to Quote being 16 pixels long, with half of him drawn into the slope, causing a collision, again
+
+		//Reposition palyer to correct "y"
+		if (this->_bGrounded) {
+			this->_y =newY - this->_rBoundingBox.GetHeight();
+			_bGrounded = true;
+		}
+		//BUGGED
+		/*else if(!_bGrounded && this->_dy < 0){//we seem to hit a slope from jumping?
+			this->_y += 1;	//move down 1 pixel to get away from cieling slope
+			this->_dy = 0;	//hit a slope so stop acceleration
+		}*/
+		
+	}
 }

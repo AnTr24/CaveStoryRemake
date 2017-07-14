@@ -79,16 +79,20 @@ void Game::GameLoop() {
 		//Now that the inputs/keys have been set, take an action
 
 		//Esc key - closes game
-		if (input.WasKeyPressed(SDL_SCANCODE_ESCAPE) == true) {
+		if (input.WasKeyPressed(SDL_SCANCODE_ESCAPE)) {
 			return;
 		}
 		//Left Key - Moves player left
-		else if (input.WasKeyPressed(SDL_SCANCODE_LEFT) == true) {
+		else if (input.WasKeyPressed(SDL_SCANCODE_LEFT)) {
 			this->_player.MoveLeft();
 		}
 		//Right Key - Moves player right
-		else if (input.WasKeyPressed(SDL_SCANCODE_RIGHT) == true) {
+		else if (input.WasKeyPressed(SDL_SCANCODE_RIGHT)) {
 			this->_player.MoveRight();
+		}
+
+		if (input.WasKeyPressed(SDL_SCANCODE_Z)) {
+			this->_player.Jump();
 		}
 
 		//if neither horizontal move keys are being held, stop moving
@@ -126,5 +130,11 @@ void Game::Update(float elapsedTime) {
 	if ((others = this->_level.CheckTileCollisions(this->_player.GetBoundingBox())).size() > 0)
 	{//Player colldied with atleast 1 tile
 		this->_player.HandleTileCollisions(others);
+	}
+	//Check slopes
+	std::vector<Slope> otherSlopes;
+	if ((otherSlopes = this->_level.CheckSlopeCollisions(this->_player.GetBoundingBox())).size() > 0)
+	{//Player colldied with atleast 1 slope
+		this->_player.HandleSlopeCollisions(otherSlopes);
 	}
 }

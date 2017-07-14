@@ -10,6 +10,7 @@ Description:	Header file for player class.
 //includes
 #include "animatedsprite.h";
 #include "globals.h";
+#include "slope.h";
 
 class Graphics;
 
@@ -36,6 +37,10 @@ public:
 	//Stops moving the player
 	void StopMoving();
 
+	//void Jump
+	//Starts jumping
+	void Jump();
+
 	/*virtual void AnimationDone
 	*Logic that occurs when animation finishes
 	*Note: adding the = 0 means that the function is now pure virtual, can't be implemented in this class
@@ -48,8 +53,12 @@ public:
 	virtual void SetupAnimation();
 
 	//void HandleTileCollisions
-	//handles a detected collision with ALL tiles the palyer is colliding with
+	//handles a detected collision with ALL tiles the player is colliding with
 	void HandleTileCollisions(std::vector<Rectangle> &others);
+
+	//void HandleSlopeCollisions
+	//handles a detected collision with ALL slopes the player is colliding with
+	void HandleSlopeCollisions(std::vector<Slope> &others);
 
 	//Getter functions to get X or Y coordinates
 	const float GetX() const;
