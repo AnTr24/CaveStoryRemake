@@ -48,7 +48,6 @@ void Player::Draw(Graphics &graphics) {
 }
 
 void Player::Update(float elapsedTime) {
-
 	//Apply gravity
 	if (this->_dy <= player_constants::GRAVITY_CAP) {
 		this->_dy += player_constants::GRAVITY*elapsedTime;
@@ -157,11 +156,11 @@ void Player::HandleTileCollisions(std::vector<Rectangle> &others) {
 			case sides::TOP:
 				this->_dy = 0;
 				this->_y = others.at(i).GetBottom() + 1;
-
+				/*
 				if (this->_bGrounded) {
 					this->_dx = 0;
 					this->_x -= _facing == RIGHT ? 0.5f : -0.5;
-				}
+				}*/
 				break;
 			case sides::BOTTOM:
 				this->_y = others.at(i).GetTop() - this->_rBoundingBox.GetHeight();
@@ -180,7 +179,6 @@ void Player::HandleTileCollisions(std::vector<Rectangle> &others) {
 void Player::HandleSlopeCollisions(std::vector<Slope> &others) {
 	//loop through to check each slope
 	for (int i = 0; i < others.size(); i++) {
-		/*OLD COLLISION CODE
 
 		//Calculate where on the slope the player's bottom center is touching
 		//then use y=mx+b to determine the y pos to place him at
@@ -193,59 +191,21 @@ void Player::HandleSlopeCollisions(std::vector<Slope> &others) {
 
 		//now pass the newly found x and b into the y=mx+b equation
 		//to get the new y position
-		int newY = others.at(i).GetSlope() * centerX + b - 8;	//8 is a temporary fix
+		int newY = others.at(i).GetSlope() * centerX + b;	//8 is a temporary fix
 		//-8 moves the player a bit higher since we lost sound accuracy due to rounding?
 		//or perhaps due to Quote being 16 pixels long, with half of him drawn into the slope, causing a collision, again
 
 		//Reposition player to correct "y"
-		if (this->_bGrounded) {
+		//depending on type of slope
+		if (others.at(i).Type == Slope::SlopeType::Ground && this->_dy >= 0) {
+			//coliding onto a ground slope by falling
 			this->_y =newY - this->_rBoundingBox.GetHeight();
-			_bGrounded = true;
+			this->_bGrounded = true;
 		}
-		//BUGGED
-		/*else if(!_bGrounded && this->_dy < 0){//we seem to hit a slope from jumping?
-			this->_y += 1;	//move down 1 pixel to get away from cieling slope
-			this->_dy = 0;	//hit a slope so stop acceleration
-		}*/
-
-		
-		
-		//Perhaps changing the slope detection:
-		//1.determine if hitting a slope from above or below
-		//2.place player on a corner of the bounding box depending on
-		//a.colliding slope on top/bottom
-		//b?.moving left/right? -expand to include whether the slope is [/] or [\]
-
-		//Determine if slope was top or bottom
-		//which point is the highest?
-		//note to self: remember y goes from 0(top) to X....
-		Vector2 top = others.at(i).GetP1().y < others.at(i).GetP2().y ? others.at(i).GetP1() : others.at(i).GetP2();
-
-		if (this->_y < top.y)
-		{//slope is ground
-		 //Calculate where on the slope the player's bottom center is touching
-		 //then use y=mx+b to determine the y pos to place him at
-		 //First calculate "b"(slope intercept) using one of the points
-		 //(b = y - mx)
-			int b = (others.at(i).GetP1()).y - others.at(i).GetSlope() * fabs(others.at(i).GetP1().x);
-
-			//Now get player's center x
-			int centerX = this->_rBoundingBox.GetCenterX();
-
-			//now pass the newly found x and b into the y=mx+b equation
-			//to get the new y position
-			int newY = others.at(i).GetSlope() * centerX + b - 8;	//8 is a temporary fix
-																	//-8 moves the player a bit higher since we lost sound accuracy due to rounding?
-																	//or perhaps due to Quote being 16 pixels long, with half of him drawn into the slope, causing a collision, again
-			//Reposition player to correct "y"
-			if (this->_bGrounded) {
-				this->_y = newY - this->_rBoundingBox.GetHeight();
-			}
-		}
-		else {
-			//slope is ceiling
-			this->_y += 1;	//move down 1 pixel to get away from ceiling slope
-			this->_dy = 0;	//hit a slope so stop acceleration
+		else if(others.at(i).Type == Slope::SlopeType::Ceiling)
+		{//handle ceiling slope collision
+			this->_dy = 0;
+			this->_y += 1;
 		}
 	}
 }

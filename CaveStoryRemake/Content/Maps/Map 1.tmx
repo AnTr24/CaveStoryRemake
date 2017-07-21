@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" tiledversion="1.0.2" orientation="orthogonal" renderorder="right-down" width="20" height="16" tilewidth="16" tileheight="16" nextobjectid="43">
+<map version="1.0" tiledversion="1.0.2" orientation="orthogonal" renderorder="right-down" width="20" height="16" tilewidth="16" tileheight="16" nextobjectid="47">
  <tileset firstgid="1" name="PrtCave" tilewidth="16" tileheight="16" tilecount="80" columns="16">
   <image source="../Tilesets/PrtCave.png" width="256" height="80"/>
  </tileset>
@@ -656,43 +656,47 @@
   <object id="2" x="144.219" y="64.8685" width="15.3874" height="14.4823"/>
   <object id="3" x="111.634" y="79.9541" width="80.2559" height="15.3874"/>
   <object id="4" x="58.2308" y="28.0594" width="23.5337" height="107.41"/>
-  <object id="5" x="53.4033" y="125.513" width="60.041" height="16.5943"/>
-  <object id="6" x="107.41" y="126.116" width="6.03427" height="58.2308"/>
-  <object id="7" x="128.53" y="144.219" width="47.0673" height="15.6891"/>
-  <object id="8" x="192.493" y="145.124" width="15.3874" height="14.1805"/>
+  <object id="6" x="106.41" y="125.449" width="6.03427" height="58.2308"/>
+  <object id="7" x="130.53" y="144.219" width="43.0673" height="15.6891"/>
+  <object id="8" x="193.826" y="145.124" width="14.0541" height="14.1805"/>
   <object id="9" x="209.088" y="128.228" width="31.0765" height="14.784"/>
   <object id="11" x="174.089" y="25.6457" width="12.0685" height="37.7142"/>
   <object id="14" x="238.052" y="98.6604" width="11.4651" height="32.2834"/>
-  <object id="15" x="114.35" y="185.252" width="93.833" height="13.2754"/>
+  <object id="15" x="131.642" y="189.419" width="54.1663" height="10.9421"/>
   <object id="16" x="206.372" y="161.719" width="7.84456" height="25.6457"/>
   <object id="24" x="383" y="86"/>
-  <object id="33" x="110.5" y="17" width="34.5" height="15.5"/>
-  <object id="34" x="81.75" y="32.25" width="31.5" height="17.5"/>
+  <object id="33" x="93.875" y="17" width="34.5" height="15.5"/>
+  <object id="34" x="81.75" y="32.25" width="31.625" height="14.875"/>
  </objectgroup>
- <objectgroup name="slopes">
-  <object id="28" x="187.212" y="186.273">
-   <polyline points="0,0 20,-14.3636"/>
+ <objectgroup name="ground slopes">
+  <object id="28" x="179.962" y="189.273">
+   <polyline points="0,0 27.9167,-17.0302"/>
   </object>
-  <object id="29" x="113.697" y="176.878">
-   <polyline points="0,0 21.0909,9.72727"/>
+  <object id="29" x="112.447" y="175.628">
+   <polyline points="0,0 30.7159,14.0606"/>
   </object>
   <object id="30" x="82.3636" y="113.273">
-   <polyline points="0,0 30.5455,12.7273"/>
+   <polyline points="0,0 29.9205,12.3523"/>
   </object>
-  <object id="31" x="159.606" y="66.5758">
+  <object id="31" x="160.106" y="65.2008">
    <polyline points="0,0 14.7273,-3.63636"/>
   </object>
-  <object id="32" x="225.151" y="129.211">
-   <polyline points="0,0 14.4242,-3.96969"/>
+  <object id="32" x="226.526" y="128.586">
+   <polyline points="0,0 12.2992,-4.09469"/>
   </object>
-  <object id="35" x="82" y="62.25">
-   <polyline points="0,0 28,-12.75"/>
+ </objectgroup>
+ <objectgroup name="ceiling slopes">
+  <object id="41" x="192" y="93">
+   <polyline points="0,0 16.3333,-6.33333 47.3333,6.33333"/>
   </object>
   <object id="36" x="159.5" y="29">
    <polyline points="0,0 15.5,7.5"/>
   </object>
-  <object id="41" x="192" y="93">
-   <polyline points="0,0 16.3333,-6.33333 47.3333,6.33333"/>
+  <object id="35" x="81.875" y="61.75">
+   <polyline points="0,0 31.25,-15.375"/>
+  </object>
+  <object id="46" x="128.25" y="30.5">
+   <polyline points="0,0 16.5,-5.625"/>
   </object>
  </objectgroup>
  <objectgroup color="#00ff00" name="spawn points">

@@ -17,14 +17,24 @@ Description:	handles the slopes(hypotenuse line between 2 points)
 //Class definition
 class Slope {
 public:
+	enum SlopeType {
+		Ceiling,
+		Ground
+	};
+
+	SlopeType Type;
+
 	Slope() {}	// default constructor
 
-	Slope(Vector2 p1, Vector2 p2) :
+	Slope(Vector2 p1, Vector2 p2, SlopeType slopeType) :
 		_v2P1(p1),
-		_v2P2(p2)
+		_v2P2(p2),
+		Type(slopeType)
 	{
 		_fSlope = CalculateSlope(p1, p2);
 	}
+
+	
 
 	//static float CalculateLength
 	//calculates the distance between 2 points

@@ -90,7 +90,16 @@ void Game::GameLoop() {
 		else if (input.WasKeyPressed(SDL_SCANCODE_RIGHT)) {
 			this->_player.MoveRight();
 		}
+		//Right Key Still Held - Moves player right
+		else if (input.IsKeyHeld(SDL_SCANCODE_RIGHT)) {
+			this->_player.MoveRight();
+		}
+		//Left Key Still Held  - Moves player left
+		else if (input.IsKeyHeld(SDL_SCANCODE_LEFT)) {
+			this->_player.MoveLeft();
+		}
 
+		//Z Key - Make player jump
 		if (input.WasKeyPressed(SDL_SCANCODE_Z)) {
 			this->_player.Jump();
 		}

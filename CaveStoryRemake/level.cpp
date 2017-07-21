@@ -256,8 +256,8 @@ void Level::LoadMap(std::string mapName, Graphics &graphics) {
 				}
 			}
 			//Other objectgroups go here with an else if(ssCollisions.str()=="thing"){}
-			//parse slopes
-			else if (ssCollisions.str() == "slopes") {	//object group "slopes"
+			//parse ground slopes
+			else if (ssCollisions.str() == "ground slopes") {	//object group "slopes"
 				XMLElement* pObject = pObjectGroup->FirstChildElement("object");
 				if (pObject != NULL) {
 					while (pObject) {
@@ -294,7 +294,53 @@ void Level::LoadMap(std::string mapName, Graphics &graphics) {
 						for (int i = 0; vPoints.size() != 0 && i < vPoints.size() - 1; i++) {
 							Vector2 p1 = Vector2(vPoints.at(i).x * globals::SPRITE_SCALE, vPoints.at(i).y * globals::SPRITE_SCALE);
 							Vector2 p2 = Vector2(vPoints.at(i + 1).x * globals::SPRITE_SCALE, vPoints.at(i + 1).y * globals::SPRITE_SCALE);
-							_vSlopes.push_back(Slope(p1, p2));
+							_vSlopes.push_back(Slope(p1, p2, Slope::SlopeType::Ground));
+						}
+
+						pObject = pObject->NextSiblingElement("object");
+					}
+				}
+			}
+			//Other objectgroups go here with an else if(ssCollisions.str()=="thing"){}
+			//parse ceiling slopes
+			else if (ssCollisions.str() == "ceiling slopes") {	//object group "slopes"
+				XMLElement* pObject = pObjectGroup->FirstChildElement("object");
+				if (pObject != NULL) {
+					while (pObject) {
+						XMLElement* pPolyline = pObject->FirstChildElement("polyline");
+						std::vector<Vector2> vPoints;	//holds all the points in the object
+
+														//Grab the first point in the slope
+						Vector2 p1;
+						p1 = Vector2(std::ceil(pObject->FloatAttribute("x")), std::ceil(pObject->FloatAttribute("y")));
+
+						//Now to get the other point(s)
+						//Polyline values in the .tmx indicate the offset added to the initial (x,y) attributes to get the next set of points
+						if (pPolyline != NULL) {
+							std::vector<std::string> pairs;
+							const char* pointString = pPolyline->Attribute("points");
+							std::stringstream ssPoints;
+							ssPoints << pointString;
+
+							Utils::Split(ssPoints.str(), pairs, ' ');
+							//Now <pairs> has been populated with the offset pairs of values
+							//Loop through the pairs and add them to the initial (x,y) to get the point coordinates
+							//Now split them into Vector2s and then store them in our points vector
+							for (int i = 0; i < pairs.size(); i++) {
+								std::vector<std::string> pointOffset;
+								Utils::Split(pairs.at(i), pointOffset, ',');
+								//ps[0] will now have x offset. ps[1] with y offset
+								vPoints.push_back(Vector2(
+									std::stoi(pointOffset.at(0)) + p1.x,
+									std::stoi(pointOffset.at(1)) + p1.y));
+							}
+						}
+
+						//now to scale points to game size and create the slopes
+						for (int i = 0; vPoints.size() != 0 && i < vPoints.size() - 1; i++) {
+							Vector2 p1 = Vector2(vPoints.at(i).x * globals::SPRITE_SCALE, vPoints.at(i).y * globals::SPRITE_SCALE);
+							Vector2 p2 = Vector2(vPoints.at(i + 1).x * globals::SPRITE_SCALE, vPoints.at(i + 1).y * globals::SPRITE_SCALE);
+							_vSlopes.push_back(Slope(p1, p2, Slope::SlopeType::Ceiling));
 						}
 
 						pObject = pObject->NextSiblingElement("object");
