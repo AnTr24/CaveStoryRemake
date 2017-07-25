@@ -16,6 +16,7 @@ class Thing {
 public:
 	Thing();	// default constructor
 	~Thing();	//desctructor
+protected:
 private:
 };
 #endif	//end of #include guard

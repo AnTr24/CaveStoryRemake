@@ -90,7 +90,6 @@ void Player::SetupAnimation() {
 
 /*void AnimationDone
 *Logic that occurs when animation finishes
-*Note: adding the = 0 means that the function is now pure virtual, can't be implemented in this class
 */
 void Player::AnimationDone(std::string currentAnimation) {}
 

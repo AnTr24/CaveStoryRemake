@@ -47,6 +47,29 @@ void AnimatedSprite::PlayAnimation(std::string sAnimationName, bool once) {
 	this->_iFrameIndex = 0;
 }
 
+/*void ResetAnimation
+*Resets all animation associated with sprite
+*/
+void AnimatedSprite::ResetAnimation() {
+	this->_mAnimations.clear();
+	this->_mOffsets.clear();
+}
+
+/*void StopAnimation
+*Stops the current animation
+*/
+void AnimatedSprite::StopAnimation() {
+	this->_iFrameIndex = 0;
+	this->AnimationDone(this->_sCurrentAnimation);
+}
+
+/*void SetVisible
+*Changes visibility of the animated sprite
+*/
+void AnimatedSprite::SetVisible(bool visible) {
+	this->_bVisible = visible;
+}
+
 //void Update - Updated animated sprite(timer)
 void AnimatedSprite::Update(int elapsedTime) {
 	Sprite::Update();
@@ -74,8 +97,7 @@ void AnimatedSprite::Update(int elapsedTime) {
 			this->SetVisible(false);
 		}
 		//no matter what, frame index goes back to beginning and animation finishes
-		this->_iFrameIndex = 0;
-		this->AnimationDone(this->_sCurrentAnimation);
+		this->StopAnimation();
 	}
 }
 
@@ -97,28 +119,6 @@ void AnimatedSprite::Draw(Graphics &graphics, int x, int y) {
 	}
 }
 
-//OLD WAY OF ADDING ANIMATION
-/*void AddAnimation
-*Adds an animation to the map of animations for the sprite
-*/
-/*
-void AnimatedSprite::AddAnimation(int frames, int x, int y, std::string name, int width, int height, Vector2 offset) 
-{
-	std::vector<SDL_Rect> rectangles;	//cuts up sprite sheet to the frames we need
-
-	//loop through the spritesheet to get each frame
-	for (int i = 0; i < frames; i++)
-	{
-		SDL_Rect newRect = {(i + x)*width, y, width, height, };
-		rectangles.push_back(newRect);
-	}
-
-	//load the frames for the animation
-	this->_mAnimations.insert(std::pair<std::string, std::vector<SDL_Rect> >(name, rectangles));
-	this->_mOffsets.insert(std::pair<std::string, Vector2>(name, offset));
-}
-*/
-
 void AnimatedSprite::AddAnimation(std::vector<Vector2> frameLocations, std::string name, int width, int height, Vector2 offset)
 {
 std::vector<SDL_Rect> rectangles;	//cuts up sprite sheet to the frames we need
@@ -135,35 +135,3 @@ rectangles.push_back(newRect);
 this->_mAnimations.insert(std::pair<std::string, std::vector<SDL_Rect> >(name, rectangles));
 this->_mOffsets.insert(std::pair<std::string, Vector2>(name, offset));
 }
-
-
-/*void ResetAnimation
-*Resets all animation associated with sprite
-*/
-void AnimatedSprite::ResetAnimation() {
-	this->_mAnimations.clear();
-	this->_mOffsets.clear();
-}
-
-/*void StopAnimation
-*Stops the current animation
-*/
-void AnimatedSprite::StopAnimation() {
-	this->_iFrameIndex = 0;
-	this->AnimationDone(this->_sCurrentAnimation);
-}
-
-/*void SetVisible
-*Changes visibility of the animated sprite
-*/
-void AnimatedSprite::SetVisible(bool visible) {
-	this->_bVisible = visible;
-}
-/*
-virtual void AnimationDone
-*Logic that occurs when animation finishes
-
-void AnimatedSprite::AnimationDone(std::string currentAnimation) {
-
-}
-*/

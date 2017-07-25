@@ -3,6 +3,27 @@
  <tileset firstgid="1" name="PrtCave" tilewidth="16" tileheight="16" tilecount="80" columns="16">
   <image source="../Tilesets/PrtCave.png" width="256" height="80"/>
  </tileset>
+ <tileset firstgid="81" name="NpcSym" tilewidth="16" tileheight="16" tilecount="300" columns="20">
+  <image source="../Tilesets/NpcSym.png" width="320" height="240"/>
+  <tile id="18">
+   <animation>
+    <frame tileid="18" duration="10"/>
+    <frame tileid="19" duration="10"/>
+   </animation>
+  </tile>
+  <tile id="26">
+   <animation>
+    <frame tileid="26" duration="100"/>
+    <frame tileid="27" duration="100"/>
+    <frame tileid="28" duration="100"/>
+    <frame tileid="29" duration="100"/>
+    <frame tileid="30" duration="100"/>
+    <frame tileid="31" duration="100"/>
+    <frame tileid="32" duration="100"/>
+    <frame tileid="33" duration="100"/>
+   </animation>
+  </tile>
+ </tileset>
  <layer name="background" width="20" height="16">
   <data>
    <tile gid="34"/>
@@ -482,8 +503,8 @@
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
+   <tile gid="99"/>
+   <tile gid="107"/>
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
@@ -680,9 +701,6 @@
   </object>
   <object id="31" x="160.106" y="65.2008">
    <polyline points="0,0 14.7273,-3.63636"/>
-  </object>
-  <object id="32" x="226.526" y="128.586">
-   <polyline points="0,0 12.2992,-4.09469"/>
   </object>
  </objectgroup>
  <objectgroup name="ceiling slopes">

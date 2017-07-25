@@ -23,10 +23,11 @@ public:
 
 	void Update(int elapsedTime);
 	void Draw(Graphics &graphics);
-private:
-	SDL_Texture* _tileset;
+protected:
 	Vector2 _v2Size;
 	Vector2 _v2TilesetPosition;
 	Vector2 _v2Position;
+	SDL_Texture* _tileset;
+private:
 };
 #endif	//end of #include guard

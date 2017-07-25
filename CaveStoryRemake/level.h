@@ -8,12 +8,14 @@ Description:	Header file for level class.
 #define LEVEL_H
 
 //includes
-#include "globals.h"
 #include <string>
 #include <vector>
+
+#include "globals.h"
 #include "tile.h"
 #include "rectangle.h"
 #include "slope.h"
+#include "animatedtile.h"
 
 class Graphics;
 struct SDL_Texture;
@@ -48,19 +50,26 @@ private:
 
 	SDL_Texture* _backgroundTexture;
 
-	std::vector<Tile> _vTileList;			//holds tiles to be drawn
-	std::vector<Tileset> _vTilesets;		//holds loaded tilesets
-	std::vector<Rectangle>_vCollisionRects;	//holds collision objects
-	std::vector<Slope> _vSlopes;
+	std::vector<Tile> _vTileList;				//holds regular tiles to be drawn
+	std::vector<Tileset> _vTilesets;			//holds loaded tilesets
+	std::vector<Rectangle>_vCollisionRects;		//holds rectangle collision objects
+	std::vector<Slope> _vSlopes;				//holds slope collision objects
+
+	std::vector<AnimatedTile> _vAnimatedTiles;			//holds animated tiles to be drawn
+	std::vector<AnimatedTileInfo> _vAnimatedTileInfos;	//holds data on each animated tile
 
 	/*void LoadMap
 	*Loads a map
 	*/
 	void LoadMap(std::string mapName, Graphics &graphics);
+
+	//Vector2 GetTilesetPosition
+	//calculates tile's position on the tileset texture
+	Vector2 GetTilesetPosition(Tileset tls, int gid, int tileWidth, int tileHeight);
 };
 
 //Tileset structure
-// used for parsing the tmx files
+// used for parsing the .tmx files
 struct Tileset {
 	SDL_Texture* Texture;
 	int FirstGid;

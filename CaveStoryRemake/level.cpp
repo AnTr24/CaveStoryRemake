@@ -40,7 +40,9 @@ Level::~Level() {
 Functions
 **************************************************************************/
 void Level::Update(int elapsedTime) {
-
+	for (int i = 0; i < _vAnimatedTiles.size(); i++) {
+		_vAnimatedTiles.at(i).Update(elapsedTime);
+	}
 }
 
 void Level::Draw(Graphics &graphics) {
@@ -48,6 +50,28 @@ void Level::Draw(Graphics &graphics) {
 	for (int i = 0; i < this->_vTileList.size(); i++) {
 		this->_vTileList.at(i).Draw(graphics);
 	}
+
+	for (int i = 0; i < _vAnimatedTiles.size(); i++) {
+		_vAnimatedTiles.at(i).Draw(graphics);
+	}
+}
+
+//Vector2 GetTilesetPosition
+//calculates tile's position on the tileset texture
+Vector2 Level::GetTilesetPosition(Tileset tls, int gid, int tileWidth, int tileHeight) {
+	int tilesetWidth, tilesetHeight;
+	//Query the tileset to get its width and height
+	//SDL_QueryTexture will define the supplied w and h pointers
+	SDL_QueryTexture(tls.Texture, NULL, NULL, &tilesetWidth, &tilesetHeight);
+
+	int tsxx = (gid - 1) % (tilesetWidth / tileWidth); //calculating the correct tile based on gid
+	tsxx *= tileWidth; //now scale the position back to size
+
+	//now for the y position
+	int tsyy = (gid - tls.FirstGid) / (tilesetWidth / tileWidth);
+	tsyy *= tileHeight; //now scaled back to size
+
+	return Vector2{ tsxx,tsyy };
 }
 
 //Checks if <other> object collided with a tile
@@ -65,7 +89,7 @@ std::vector<Rectangle> Level::CheckTileCollisions(const Rectangle &other) {
 }
 
 //Checks if <other> object collided with a slope
-std::vector<Slope> Level::CheckSlopeCollisions(const Rectangle &other){
+std::vector<Slope> Level::CheckSlopeCollisions(const Rectangle &other) {
 	std::vector<Slope> others;
 	for (int i = 0; i < this->_vSlopes.size(); i++) {
 		if (this->_vSlopes.at(i).CollidesWith(other)) {
@@ -138,6 +162,33 @@ void Level::LoadMap(std::string mapName, Graphics &graphics) {
 			//Add to vector of loaded tilesets
 			this->_vTilesets.push_back(Tileset(tex, firstgid));
 
+			//check if the set has animations
+			XMLElement* pTileAni = pTileset->FirstChildElement("tile");	//tileset ->tile
+			while (pTileAni) {
+				AnimatedTileInfo ati;
+				ati.StartTileID = pTileAni->IntAttribute("id") + firstgid;
+				ati.TilesetsFirstGid = firstgid;
+
+				//keep moving till we get to frame
+				XMLElement* pAnimation = pTileAni->FirstChildElement("animation");	//tileset -> tile -> animation
+				if (pAnimation != NULL) {
+					while (pAnimation) {
+						XMLElement* pFrame = pAnimation->FirstChildElement("frame");//tileset -> tile -> animation ->frame
+						while (pFrame) {
+							ati.TileIds.push_back(pFrame->IntAttribute("tileid") + firstgid);
+							ati.Duration = pFrame->IntAttribute("duration");
+
+							pFrame = pFrame->NextSiblingElement("frame");	//check for more frames
+						}
+
+						pAnimation = pAnimation->NextSiblingElement("animation"); //check for more animations
+					}
+				}
+
+				this->_vAnimatedTileInfos.push_back(ati);
+				pTileAni = pTileAni->NextSiblingElement("tile"); //check if other tiles have animations
+			}
+
 			pTileset = pTileset->NextSiblingElement("tileset"); //Attempt to retrieve additional tilesets if there are more
 		}
 	}
@@ -166,13 +217,14 @@ void Level::LoadMap(std::string mapName, Graphics &graphics) {
 								//tile detected
 								int gid = pTile->IntAttribute("gid");
 								Tileset tls;
-
+								int closestGID = 0;
 								//determine which tileset the tile comes from
 								for (int i = 0; i < this->_vTilesets.size(); i++) {
-									if (this->_vTilesets[i].FirstGid <= gid) {
-										//this is the tileset we want
+									if (this->_vTilesets[i].FirstGid <= gid &&		//check if the FirstGID is within the tile's GID
+										this->_vTilesets[i].FirstGid > closestGID)	//now compare this tileset's FirstGid "closeness" to the closest tileset's FirstGid
+									{
+										closestGID = this->_vTilesets[i].FirstGid;
 										tls = this->_vTilesets.at(i);
-										break;
 									}
 								}
 
@@ -190,23 +242,37 @@ void Level::LoadMap(std::string mapName, Graphics &graphics) {
 									Vector2 finalTilePosition = { xx,yy }; //Got the tile's level position
 
 									//Get the position of the tile in the tileset...
-									int tilesetWidth, tilesetHeight;
-									//Query the tileset to get its width and height
-									//SDL_QueryTexture will define the supplied w and h pointers
-									SDL_QueryTexture(tls.Texture, NULL, NULL, &tilesetWidth, &tilesetHeight);
+									Vector2 finalTilesetPosition = this->GetTilesetPosition(tls, gid, tileWidth, tileHeight);
 
-									int tsxx = gid % (tilesetWidth / tileWidth) - 1; //calculating the correct tile based on gid
-									tsxx *= tileWidth; //now scale the position back to size
+									//Check to see if tile is an animated tile
+									bool isAnimatedTile = false;	//flag for tile being an animated tile
+									AnimatedTileInfo ati;			//temporary placeholder
 
-									//now for the y position
-									int tsyy = gid / (tilesetWidth / tileWidth);
-									tsyy *= tileHeight; //now scaled back to size
-
-									Vector2 finalTilesetPosition = { tsxx,tsyy };
+									//loop through all the stored atis and check their ID to this current tile's ID
+									for (int i = 0; i < this->_vAnimatedTileInfos.size(); i++) {
+										if (this->_vAnimatedTileInfos.at(i).StartTileID == gid) {
+											isAnimatedTile = true;
+											ati = this->_vAnimatedTileInfos.at(i);
+											break;
+										}
+									}
 
 									//Build the actual tile and add it to the level's tile list
-									Tile tile = Tile(tls.Texture, _v2TileSize, finalTilesetPosition, finalTilePosition);
-									_vTileList.push_back(tile);
+									if (isAnimatedTile) {
+										//Animated tile...
+										std::vector<Vector2> tilesetPositions;
+										for (int i = 0; i < ati.TileIds.size(); i++) {
+											tilesetPositions.push_back(GetTilesetPosition(tls,ati.TileIds.at(i),tileWidth,tileHeight));
+										}
+
+										AnimatedTile animatedTile = AnimatedTile(tilesetPositions, ati.Duration, tls.Texture, Vector2(tileWidth, tileHeight), finalTilePosition);
+										_vAnimatedTiles.push_back(animatedTile);
+									}
+									else {
+										//Regular tile...
+										Tile tile = Tile(tls.Texture, _v2TileSize, finalTilesetPosition, finalTilePosition);
+										_vTileList.push_back(tile);
+									}
 								}
 							}
 
