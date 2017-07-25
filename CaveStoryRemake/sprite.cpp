@@ -44,7 +44,7 @@ const Rectangle Sprite::GetBoundingBox() const {
 //const sides::Side GetCollisionSide
 //Grab the side of the collision
 const sides::Side Sprite::GetCollisionSide(Rectangle &other) const {
-	//determine what side the collision happened on
+	//determine what side the collision happened on (relative to 'this')
 	int amtRight, amtLeft, amtTop, amtBottom;	//amount that the rectangle collided with the other
 	const Rectangle boundingBox = this->GetBoundingBox();
 	

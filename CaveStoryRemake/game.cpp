@@ -17,7 +17,7 @@ Constructors and Deconstructors
 namespace {
 	//define some constants for the game
 	const int FPS = 50;	//limit frames to 50
-	const int MAX_FRAME_TIME = 5 * 1000 / FPS;	//limit time a frame can last
+	const int MAX_FRAME_TIME = 1000 / FPS;	//limit time a frame can last
 }
 
 //Game constructor
@@ -134,7 +134,7 @@ void Game::Update(float elapsedTime) {
 	this->_player.Update(elapsedTime);
 	this->_level.Update(elapsedTime);
 
-	//check collisions
+	//check tile collisions
 	std::vector<Rectangle> others;
 	if ((others = this->_level.CheckTileCollisions(this->_player.GetBoundingBox())).size() > 0)
 	{//Player colldied with atleast 1 tile
