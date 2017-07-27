@@ -37,6 +37,22 @@ public:
 	//Stops moving the player
 	void StopMoving();
 
+	//void LookUp
+	//Makes the player view upwards
+	void LookUp();
+
+	//void StopLookingUp
+	//Stops the LookingUp action
+	void StopLookingUp();
+
+	//void LookDown
+	//Makes the player view downwards OR interacts with a game object (turns around)
+	void LookDown();
+
+	//void StopLookingDown
+	//Stops the LookingDown action
+	void StopLookingDown();
+
 	//void Jump
 	//Starts jumping
 	void Jump();
@@ -70,5 +86,7 @@ private:
 	Direction _facing;	//determines direction player is facing
 
 	bool _bGrounded;	//flag for being on ground or in air
+	bool _bLookingUp;	//flag for player looking up
+	bool _bLookingDown;	//flag for player looking down
 };
 #endif	//end of #include guard

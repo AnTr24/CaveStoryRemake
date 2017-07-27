@@ -30,7 +30,9 @@ Player::Player(Graphics &graphics, Vector2 spawnPoint) :
 	_dx(0),
 	_dy(0),
 	_facing(RIGHT),
-	_bGrounded(false)
+	_bGrounded(false),
+	_bLookingUp(false),
+	_bLookingDown(false)
 {
 	graphics.LoadImage("Content/Sprites/MyChar.png");
 
@@ -81,11 +83,42 @@ void Player::SetupAnimation() {
 	//Animation for running right
 	std::vector<Vector2> runRightFrames = { Vector2(0,16), Vector2(16,16), Vector2(0,16), Vector2(32,16) };
 
+	//Animation for idleing left & looking up
+	std::vector<Vector2> idleLeftLookUpFrames = { Vector2(48,0) };
+	//Animation for idleing right & looking up
+	std::vector<Vector2> idleRightLookUpFrames = { Vector2(48,16) };
+	//Animation for running left & looking up
+	std::vector<Vector2> runLeftLookUpFrames = { Vector2(48,0), Vector2(64,0), Vector2(80,0)};
+	//Animation for running right & looking up
+	std::vector<Vector2> runRightLookUpFrames = { Vector2(48,16), Vector2(64,16), Vector2(80,16) };
+
+	//Animation for facing left & looking down
+	std::vector<Vector2> faceLeftLookDownFrames = { Vector2(96,0)};
+	//Animation for facing right & looking down
+	std::vector<Vector2> faceRightLookDownFrames = { Vector2(96,16) };
+
+	//Animation for facing left & looking backwards
+	std::vector<Vector2> faceLeftLookBackFrames = { Vector2(112,0) };
+	//Animation for facing right & looking backwards
+	std::vector<Vector2> faceRightLookBackFrames = { Vector2(112,16) };
+
+
 	//Now add the animations
-	this->AddAnimation(idleLeftFrames, "IdleLeft", width, height, Vector2(0, 0));
-	this->AddAnimation(idleRightFrames, "IdleRight", width, height, Vector2(0, 0));
-	this->AddAnimation(runLeftFrames, "RunLeft", width, height, Vector2(0, 0));
-	this->AddAnimation(runRightFrames, "RunRight", width, height, Vector2(0, 0));
+	this->AddAnimation(idleLeftFrames, "IdleLeft", width, height, Vector2(0, 0));	//Player stands still, looking to the left
+	this->AddAnimation(idleRightFrames, "IdleRight", width, height, Vector2(0, 0));	//Player stands still, looking to the right
+	this->AddAnimation(runLeftFrames, "RunLeft", width, height, Vector2(0, 0));		//Player runs and faces towards the left
+	this->AddAnimation(runRightFrames, "RunRight", width, height, Vector2(0, 0));	//Player runs and faces towards the right
+
+	this->AddAnimation(idleLeftLookUpFrames, "IdleLeftLookUp", width, height, Vector2(0, 0));	//Player stands still, looking to the left
+	this->AddAnimation(idleRightLookUpFrames, "IdleRightLookUp", width, height, Vector2(0, 0));	//Player stands still, looking to the right
+	this->AddAnimation(runLeftLookUpFrames, "RunLeftLookUp", width, height, Vector2(0, 0));		//Player runs left and looks up
+	this->AddAnimation(runRightLookUpFrames, "RunRightLookUp", width, height, Vector2(0, 0));	//Player runs right and looks up
+
+	this->AddAnimation(faceLeftLookDownFrames, "FaceLeftLookDown", width, height, Vector2(0, 0));	//Player faces the left, looking downards
+	this->AddAnimation(faceRightLookDownFrames, "FaceRightLookDown", width, height, Vector2(0, 0));	//Player faces the right, looking downards
+
+	this->AddAnimation(faceLeftLookBackFrames, "FaceLeftLookBack", width, height, Vector2(0, 0));	//Player faces the left, looking backwards
+	this->AddAnimation(faceRightLookBackFrames, "FaceRightLookBack", width, height, Vector2(0, 0));	//Player faces the right, looking backwards
 }
 
 /*void AnimationDone
@@ -107,16 +140,37 @@ const float Player::GetY() const {
 //void MoveLeft
 //Moves the player left by -dx
 void Player::MoveLeft() {
-	this->_dx = -player_constants::WALK_SPEED;
-	this->PlayAnimation("RunLeft");
+	if (this->_bLookingDown && this->_bGrounded) {
+		//Player is interacting with something, don't move!
+		return;
+	}
+
+	//Determine which move left animation to use
+	if (!this->_bLookingUp) {
+		//Not looking up, use regular animation
+		this->_dx = -player_constants::WALK_SPEED;
+		this->PlayAnimation("RunLeft");
+	}
+	
 	this->_facing = LEFT;
 }
 
 //void MoveRight
 //Moves the player right by dx
 void Player::MoveRight() {
-	this->_dx = player_constants::WALK_SPEED;
-	this->PlayAnimation("RunRight");
+	if (this->_bLookingDown && this->_bGrounded) {
+		//Player is interacting with something, don't move!
+		return;
+	}
+
+	//Determine which move right animation to use
+	if (!this->_bLookingUp) {
+		//Not looking up, use regular animation
+		this->_dx = player_constants::WALK_SPEED;
+		this->PlayAnimation("RunRight");
+	}
+
+
 	this->_facing = RIGHT;
 }
 
@@ -124,7 +178,56 @@ void Player::MoveRight() {
 //Stops moving the player
 void Player::StopMoving() {
 	this->_dx = 0;
-	this->PlayAnimation(this->_facing == RIGHT ? "IdleRight" : "IdleLeft");
+
+	//Determine which idle animation to use
+	if (!this->_bLookingUp && !this->_bLookingDown) {
+		//Looking straight
+		this->PlayAnimation(this->_facing == RIGHT ? "IdleRight" : "IdleLeft");
+	}
+}
+
+//void LookUp
+//Makes the player view upwards
+void Player::LookUp() {
+	this->_bLookingUp = true;
+
+	//Determine which look up animation to use
+	if (this->_dx == 0) {
+		//not moving horizontally
+		this->PlayAnimation(this->_facing == RIGHT ? "IdleRightLookUp" : "IdleLeftLookUp");
+	}
+	else {
+		//while running
+		this->PlayAnimation(this->_facing == RIGHT ? "RunRightLookUp" : "RunLeftLookUp");
+	}
+}
+
+//void StopLookingUp
+//Stops the LookingUp action
+void Player::StopLookingUp() {
+	this->_bLookingUp = false;
+}
+
+//void LookDown
+//Makes the player view downwards OR interacts with a game object (turns around)
+void Player::LookDown() {
+	this->_bLookingDown = true;
+
+	if (this->_bGrounded) {
+		//we need to interact(look backwards)
+		this->PlayAnimation(this->_facing == RIGHT ? "FaceRightLookBack" : "FaceLeftLookBack");
+	}
+	else {
+		//in the air (look downwards)
+		this->PlayAnimation(this->_facing == RIGHT ? "FaceRightLookDown" : "FaceLeftLookDown");
+	}
+
+}
+
+//void StopLookingDown
+//Stops the LookingDown action
+void Player::StopLookingDown(){
+	this->_bLookingDown = false;
 }
 
 //void Jump

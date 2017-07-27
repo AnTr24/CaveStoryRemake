@@ -99,9 +99,28 @@ void Game::GameLoop() {
 			this->_player.MoveLeft();
 		}
 
+		//UP Key - Looking up
+		if (input.IsKeyHeld(SDL_SCANCODE_UP)) {
+			this->_player.LookUp();
+		}
+		//DOWN key - player looks down
+		else if (input.IsKeyHeld(SDL_SCANCODE_DOWN)) {
+			this->_player.LookDown();
+		}
+
 		//Z Key - Make player jump
 		if (input.WasKeyPressed(SDL_SCANCODE_Z)) {
 			this->_player.Jump();
+		}
+
+		//UP key released - stop looking up
+		if (input.WasKeyReleased(SDL_SCANCODE_UP)) {
+			this->_player.StopLookingUp();
+		}
+
+		//DOWN key released - stop looking down
+		if (input.WasKeyReleased(SDL_SCANCODE_DOWN)) {
+			this->_player.StopLookingDown();
 		}
 
 		//if neither horizontal move keys are being held, stop moving
