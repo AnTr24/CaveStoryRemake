@@ -86,6 +86,7 @@ private:
 	Direction _facing;	//determines direction player is facing
 
 	bool _bGrounded;	//flag for being on ground or in air
+	bool _bBusy;		//flag for interactions/cutscenes
 	bool _bLookingUp;	//flag for player looking up
 	bool _bLookingDown;	//flag for player looking down
 };

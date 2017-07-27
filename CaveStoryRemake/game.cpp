@@ -77,13 +77,20 @@ void Game::GameLoop() {
 		}
 
 		//Now that the inputs/keys have been set, take an action
+		//Now int a switch to allow simultaneous presses/releases
 
 		//Esc key - closes game
 		if (input.WasKeyPressed(SDL_SCANCODE_ESCAPE)) {
 			return;
 		}
+
+		//Z Key - Make player jump
+		if (input.WasKeyPressed(SDL_SCANCODE_Z)) {
+			this->_player.Jump();
+		}
+
 		//Left Key - Moves player left
-		else if (input.WasKeyPressed(SDL_SCANCODE_LEFT)) {
+		if (input.WasKeyPressed(SDL_SCANCODE_LEFT)) {
 			this->_player.MoveLeft();
 		}
 		//Right Key - Moves player right
@@ -106,11 +113,6 @@ void Game::GameLoop() {
 		//DOWN key - player looks down
 		else if (input.IsKeyHeld(SDL_SCANCODE_DOWN)) {
 			this->_player.LookDown();
-		}
-
-		//Z Key - Make player jump
-		if (input.WasKeyPressed(SDL_SCANCODE_Z)) {
-			this->_player.Jump();
 		}
 
 		//UP key released - stop looking up

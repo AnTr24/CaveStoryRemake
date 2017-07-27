@@ -32,7 +32,8 @@ Player::Player(Graphics &graphics, Vector2 spawnPoint) :
 	_facing(RIGHT),
 	_bGrounded(false),
 	_bLookingUp(false),
-	_bLookingDown(false)
+	_bLookingDown(false),
+	_bBusy(false)
 {
 	graphics.LoadImage("Content/Sprites/MyChar.png");
 
@@ -140,7 +141,7 @@ const float Player::GetY() const {
 //void MoveLeft
 //Moves the player left by -dx
 void Player::MoveLeft() {
-	if (this->_bLookingDown && this->_bGrounded) {
+	if (_bBusy) {
 		//Player is interacting with something, don't move!
 		return;
 	}
@@ -148,17 +149,21 @@ void Player::MoveLeft() {
 	//Determine which move left animation to use
 	if (!this->_bLookingUp) {
 		//Not looking up, use regular animation
-		this->_dx = -player_constants::WALK_SPEED;
 		this->PlayAnimation("RunLeft");
 	}
+	else {
+		//run while looking upwards
+		this->PlayAnimation("RunLeftLookUp");
+	}
 	
+	this->_dx = -player_constants::WALK_SPEED;
 	this->_facing = LEFT;
 }
 
 //void MoveRight
 //Moves the player right by dx
 void Player::MoveRight() {
-	if (this->_bLookingDown && this->_bGrounded) {
+	if (_bBusy) {
 		//Player is interacting with something, don't move!
 		return;
 	}
@@ -166,11 +171,14 @@ void Player::MoveRight() {
 	//Determine which move right animation to use
 	if (!this->_bLookingUp) {
 		//Not looking up, use regular animation
-		this->_dx = player_constants::WALK_SPEED;
 		this->PlayAnimation("RunRight");
 	}
+	else {
+		//run while looking upwards
+		this->PlayAnimation("RunRightLookUp");
+	}
 
-
+	this->_dx = player_constants::WALK_SPEED;
 	this->_facing = RIGHT;
 }
 
@@ -189,16 +197,17 @@ void Player::StopMoving() {
 //void LookUp
 //Makes the player view upwards
 void Player::LookUp() {
+	if (_bBusy) {
+		//Player is interacting with something, don't move!
+		return;
+	}
+
 	this->_bLookingUp = true;
 
-	//Determine which look up animation to use
+	//Assumign we're idleing, look up
 	if (this->_dx == 0) {
 		//not moving horizontally
 		this->PlayAnimation(this->_facing == RIGHT ? "IdleRightLookUp" : "IdleLeftLookUp");
-	}
-	else {
-		//while running
-		this->PlayAnimation(this->_facing == RIGHT ? "RunRightLookUp" : "RunLeftLookUp");
 	}
 }
 
@@ -211,17 +220,22 @@ void Player::StopLookingUp() {
 //void LookDown
 //Makes the player view downwards OR interacts with a game object (turns around)
 void Player::LookDown() {
-	this->_bLookingDown = true;
-
-	if (this->_bGrounded) {
-		//we need to interact(look backwards)
-		this->PlayAnimation(this->_facing == RIGHT ? "FaceRightLookBack" : "FaceLeftLookBack");
+	if (_bBusy) {
+		//Player is interacting with something, don't move!
+		return;
 	}
-	else {
+
+	//check whether in air on on ground
+	if (this->_bGrounded && this->_dx == 0) {
+		//grounded and not moving, we need to interact(look backwards)
+		this->PlayAnimation(this->_facing == RIGHT ? "FaceRightLookBack" : "FaceLeftLookBack");
+		this->_bLookingDown = true;
+	}
+	else if (!this->_bGrounded) {
 		//in the air (look downwards)
 		this->PlayAnimation(this->_facing == RIGHT ? "FaceRightLookDown" : "FaceLeftLookDown");
+		this->_bLookingDown = true;
 	}
-
 }
 
 //void StopLookingDown
@@ -233,6 +247,11 @@ void Player::StopLookingDown(){
 //void Jump
 //Starts jumping
 void Player::Jump() {
+	if (_bBusy) {
+		//Player is interacting with something, don't move!
+		return;
+	}
+
 	if (this->_bGrounded) {
 		this->_dy = 0;
 		this->_dy -= player_constants::JUMP_SPEED;
