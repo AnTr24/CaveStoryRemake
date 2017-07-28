@@ -35,6 +35,8 @@ public:
 
 	void SetSourceRectX(int value); //changes the X position of the source rectangle
 	void SetSourceRectY(int value);	//changes the Y position of the source rectangle
+	void SetSourceRectWidth(int value);		//changes the width of the source rectangle
+	void SetSourceRectHeight(int value);	//changes the height of the source rectangle
 
 	virtual void Update();
 	void Draw(Graphics &graphics, int x, int y);

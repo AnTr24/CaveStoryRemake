@@ -27,7 +27,19 @@ protected:
 private:
 	Player _player;
 
-	Sprite _spriteHealthBar;
-	Sprite _spriteHealthNumber1;
+	//Health-related
+	Sprite _spriteHealthBar;		//the background health sprite
+	Sprite _spriteHealthNumber1;	//sprite for the current health number
+	Sprite _spriteCurrentHealthBar;	//sprite for the current health bar
+
+	//Exp
+	Sprite _spriteLVLWord;
+	Sprite _spriteLVLNum;
+	Sprite _spriteEXPBar;
+
+	//Weapon Info
+	Sprite _spriteUISlashes;
+	Sprite _spriteUIDashes;
+
 };
 #endif	//end of #include guard

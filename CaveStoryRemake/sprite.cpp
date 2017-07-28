@@ -76,6 +76,18 @@ void Sprite::SetSourceRectY(int value) {
 	this->_sourceRect.y = value;
 }
 
+//void SetSourceRectWidth
+//Setter function: changes the width of the source rectangle
+void  Sprite::SetSourceRectWidth(int value) {
+	this->_sourceRect.w = value;
+}
+
+//void SetSourceRectHeight
+//Setter function: changes the height of the source rectangle
+void Sprite::SetSourceRectHeight(int value) {
+	this->_sourceRect.h = value;
+}
+
 //Update - Animation function
 void Sprite::Update(){
 	this->_rBoundingBox = Rectangle(this->_x, this->_y, _sourceRect.w * globals::SPRITE_SCALE, _sourceRect.h * globals::SPRITE_SCALE);
