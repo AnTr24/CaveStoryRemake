@@ -30,6 +30,12 @@ public:
 	//Grab the side of the collision
 	const sides::Side GetCollisionSide(Rectangle &other) const;
 
+	const inline float GetX() const { return this->_x; };	//Getter for sprite X coordinate
+	const inline float GetY() const { return this->_y; };	//Getter for sprite Y coordinate
+
+	void SetSourceRectX(int value); //changes the X position of the source rectangle
+	void SetSourceRectY(int value);	//changes the Y position of the source rectangle
+
 	virtual void Update();
 	void Draw(Graphics &graphics, int x, int y);
 protected:

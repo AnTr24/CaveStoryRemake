@@ -33,7 +33,9 @@ Player::Player(Graphics &graphics, Vector2 spawnPoint) :
 	_bGrounded(false),
 	_bLookingUp(false),
 	_bLookingDown(false),
-	_bBusy(false)
+	_bBusy(false),
+	_iMaxHealth(3),
+	_iCurrentHealth(3)
 {
 	graphics.LoadImage("Content/Sprites/MyChar.png");
 

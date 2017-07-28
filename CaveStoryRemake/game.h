@@ -7,8 +7,9 @@ Description:	Header file for Game class.
 #ifndef GAME_H
 #define GAME_H
 
-#include "player.h";
+#include "player.h"
 #include "level.h"
+#include "hud.h"
 
 class Graphics;
 
@@ -24,6 +25,8 @@ private:
 	Player _player;	//player sprite
 
 	Level _level;	//defines the map/level
+
+	HUD _hud;	//hud for visualizing player info 
 };
 
 #endif 

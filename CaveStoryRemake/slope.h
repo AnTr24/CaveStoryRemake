@@ -86,6 +86,8 @@ public:
 				other.GetLeft() <= this->_v2P2.x&&
 				other.GetTop() <= this->_v2P2.y &&
 				other.GetBottom() >= this->_v2P1.y);
+
+		//Note: this collision only checks if 'other' is within the bounding rectangle of the slopes....
 	}
 private:
 	Vector2 _v2P1, _v2P2;	//points on the slope

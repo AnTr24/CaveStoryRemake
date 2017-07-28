@@ -121,6 +121,7 @@
     <ClCompile Include="animatedtile.cpp" />
     <ClCompile Include="game.cpp" />
     <ClCompile Include="graphics.cpp" />
+    <ClCompile Include="hud.cpp" />
     <ClCompile Include="input.cpp" />
     <ClCompile Include="level.cpp" />
     <ClCompile Include="main.cpp" />
@@ -136,6 +137,7 @@
     <ClInclude Include="game.h" />
     <ClInclude Include="globals.h" />
     <ClInclude Include="graphics.h" />
+    <ClInclude Include="hud.h" />
     <ClInclude Include="input.h" />
     <ClInclude Include="level.h" />
     <ClInclude Include="player.h" />

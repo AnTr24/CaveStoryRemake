@@ -48,8 +48,8 @@ void Game::GameLoop() {
 	//player spritesheet is 16x16 per sprite, floats are for location on screen
 	//for visual studio, filepath starts at the folder where the .cpp and .h files are
 	this->_level = Level("Map 1", Vector2(100, 100), graphics);	//define level before player to get spawn point
-
 	this->_player = Player(graphics, this->_level.GetPlayerSpawnPoint());
+	this->_hud = HUD(graphics, _player);	//and hud after player to intialize some values
 
 	int LAST_UPDATE_TIME = SDL_GetTicks();	//get timing of first frame
 
@@ -145,8 +145,10 @@ void Game::Draw(Graphics& graphics) {
 	graphics.Clear();
 
 	//Ordering of draws is important for layering, i.e level should be drawn before player
-	this->_level.Draw(graphics);
+	this->_level.Draw(graphics);	//level is the background, draw first
 	this->_player.Draw(graphics);
+
+	this->_hud.Draw(graphics);	//HUD on top, draw last
 
 	graphics.Render();
 }
@@ -154,6 +156,7 @@ void Game::Draw(Graphics& graphics) {
 void Game::Update(float elapsedTime) {
 	this->_player.Update(elapsedTime);
 	this->_level.Update(elapsedTime);
+	this->_hud.Update(elapsedTime);
 
 	//check tile collisions
 	std::vector<Rectangle> others;

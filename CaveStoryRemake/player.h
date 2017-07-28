@@ -80,6 +80,12 @@ public:
 	const float GetX() const;
 	const float GetY() const;
 
+	//Getter functions to get player max health
+	const inline int GetMaxHealth() const{return this->_iMaxHealth;}
+
+	//Getter functions to get player current health
+	const inline int GetCurrentHealth() const {return this->_iCurrentHealth;}
+
 private:
 	float _dx, _dy;	//change in x and y positions
 
@@ -89,5 +95,7 @@ private:
 	bool _bBusy;		//flag for interactions/cutscenes
 	bool _bLookingUp;	//flag for player looking up
 	bool _bLookingDown;	//flag for player looking down
+	int _iMaxHealth;		//Total health of the player
+	int _iCurrentHealth;	//and current health
 };
 #endif	//end of #include guard

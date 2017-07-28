@@ -64,7 +64,19 @@ const sides::Side Sprite::GetCollisionSide(Rectangle &other) const {
 		sides::NONE;
 }
 
-//Animation function
+//void SetSourceRectX
+//Setter function: changes the X position of the source rectangle
+void Sprite::SetSourceRectX(int value) {
+	this->_sourceRect.x = value;
+}
+
+//void SetSourceRectY
+//Setter function: changes the Y position of the source rectangle
+void Sprite::SetSourceRectY(int value) {
+	this->_sourceRect.y = value;
+}
+
+//Update - Animation function
 void Sprite::Update(){
 	this->_rBoundingBox = Rectangle(this->_x, this->_y, _sourceRect.w * globals::SPRITE_SCALE, _sourceRect.h * globals::SPRITE_SCALE);
 }
