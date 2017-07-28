@@ -63,6 +63,7 @@ void Player::Update(float elapsedTime) {
 
 	//Move by dy(vertical movement)
 	this->_y += this->_dy * elapsedTime;
+	this->_bGrounded = false; //assume we are always falling
 
 	AnimatedSprite::Update(elapsedTime);
 }
@@ -279,11 +280,6 @@ void Player::HandleTileCollisions(std::vector<Rectangle> &others) {
 			case sides::TOP:
 				this->_dy = 0;
 				this->_y = others.at(i).GetBottom() + 1;
-				/*
-				if (this->_bGrounded) {
-					this->_dx = 0;
-					this->_x -= _facing == RIGHT ? 0.5f : -0.5;
-				}*/
 				break;
 			case sides::BOTTOM:
 				this->_y = others.at(i).GetTop() - this->_rBoundingBox.GetHeight();
