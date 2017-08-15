@@ -16,6 +16,7 @@ Description:	Header file for level class.
 #include "rectangle.h"
 #include "slope.h"
 #include "animatedtile.h"
+#include "door.h"
 
 class Graphics;
 struct SDL_Texture;
@@ -26,7 +27,7 @@ struct Tileset;
 class Level {
 public:
 	Level();	//constructor
-	Level(std::string mapName, Vector2 spawnPoint, Graphics &graphics);	//constructor
+	Level(std::string mapName, Graphics &graphics);	//constructor
 	~Level();	//desctructor
 
 	//the usual....
@@ -36,6 +37,7 @@ public:
 	//Checks if <other> object collided with something
 	std::vector<Rectangle> CheckTileCollisions(const Rectangle &other);
 	std::vector<Slope> CheckSlopeCollisions(const Rectangle &other);
+	std::vector<Door> CheckDoorCollisions(const Rectangle &other);
 
 	//const Vector2 GetPlayerSpawnPoint
 	//Retrieves the location of player spawn
@@ -57,6 +59,8 @@ private:
 
 	std::vector<AnimatedTile> _vAnimatedTiles;			//holds animated tiles to be drawn
 	std::vector<AnimatedTileInfo> _vAnimatedTileInfos;	//holds data on each animated tile
+
+	std::vector<Door> _vDoorList;	//holds the doors of the level
 
 	/*void LoadMap
 	*Loads a map

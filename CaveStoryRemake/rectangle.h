@@ -30,7 +30,7 @@ public:
 	//GetLeft : Retrieves the left side of the reactangle
 	const int GetLeft() const { return this->_x; }
 
-	//GetLeft : Retrieves the right side of the reactangle
+	//GetRight : Retrieves the right side of the reactangle
 	const int GetRight() const { return this->_x + this->_width; }
 
 	//GetTop : Retrieves the top side of the reactangle
@@ -38,6 +38,18 @@ public:
 
 	//GetBottom : Retrieves the bottom side of the reactangle
 	const int GetBottom() const { return this->_y + this->_height; }
+
+	//GetTopLeft : Retrieves the top-left point of the reactangle
+	const Vector2 GetTopLeft() const { return Vector2(this->_x,this->_y); }
+
+	//GetTopRight : Retrieves the top-right point of the reactangle
+	const Vector2 GetTopRight() const { return  Vector2(this->GetRight(),this->_y); }
+
+	//GetBottomLeft : Retrieves the bottom-left point of the reactangle
+	const Vector2 GetBottomLeft() const { return Vector2(this->_x, this->GetBottom()); }
+
+	//GetBottomRight : Retrieves the bottom-right point of the reactangle
+	const Vector2 GetBottomRight() const { return Vector2(GetRight(), this->GetBottom()); }
 
 	//GetWidth - Getter function for width
 	const int GetWidth() const { return this->_width; }
@@ -56,7 +68,7 @@ public:
 	}
 	//bool CollidesWith
 	//Takes in another rectangle and checks if the two are colliding
-	const bool CollidesWidth(const Rectangle &other) const {
+	const bool CollidesWith(const Rectangle &other) const {
 		return
 			this->GetRight() >= other.GetLeft() &&
 			this->GetLeft() <= other.GetRight() &&
@@ -68,6 +80,9 @@ public:
 	const bool  IsValidRectangle() const {
 		return (this->_x >= 0 && this->_y >= 0 && this->_width >= 0 && this->_height >= 0);
 	}
+
+	//Return a derefernced(instance) of this rectangle
+	const inline Rectangle GetRect() const { return *this; }
 
 private:
 	int _x, _y, _width, _height;

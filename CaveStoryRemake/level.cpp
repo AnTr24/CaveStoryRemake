@@ -26,9 +26,8 @@ Constructors and Deconstructors
 **************************************************************************/
 Level::Level() {}
 
-Level::Level(std::string mapName, Vector2 spawnPoint, Graphics &graphics) :
+Level::Level(std::string mapName, Graphics &graphics) :
 	_sMapName(mapName),
-	_v2SpawnPoint(spawnPoint),
 	_v2Size(Vector2::Zero())
 {
 	this->LoadMap(mapName, graphics);
@@ -74,13 +73,14 @@ Vector2 Level::GetTilesetPosition(Tileset tls, int gid, int tileWidth, int tileH
 	return Vector2{ tsxx,tsyy };
 }
 
+//std::vector<Rectangle> Level::CheckTileCollisions
 //Checks if <other> object collided with a tile
 std::vector<Rectangle> Level::CheckTileCollisions(const Rectangle &other) {
 	std::vector<Rectangle> others;	//placeholder for colldied objects
 
 	//Check if the rectangle collides with any collidable objects
 	for (int i = 0; i < this->_vCollisionRects.size(); i++) {
-		if (this->_vCollisionRects.at(i).CollidesWidth(other)) {
+		if (this->_vCollisionRects.at(i).CollidesWith(other)) {
 			others.push_back(this->_vCollisionRects.at(i));
 		}
 	}
@@ -88,12 +88,26 @@ std::vector<Rectangle> Level::CheckTileCollisions(const Rectangle &other) {
 	return others;
 }
 
+//std::vector<Slope> Level::CheckSlopeCollisions
 //Checks if <other> object collided with a slope
 std::vector<Slope> Level::CheckSlopeCollisions(const Rectangle &other) {
 	std::vector<Slope> others;
 	for (int i = 0; i < this->_vSlopes.size(); i++) {
 		if (this->_vSlopes.at(i).CollidesWith(other)) {
 			others.push_back(this->_vSlopes.at(i));
+		}
+	}
+
+	return others;
+}
+
+//std::vector<Door> CheckDoorCollisions
+//Checks if <other> object collided with a door
+std::vector<Door> Level::CheckDoorCollisions(const Rectangle &other) {
+	std::vector<Door> others;
+	for (int i = 0; i < this->_vDoorList.size(); i++) {
+		if (this->_vDoorList.at(i).CollidesWith(other)) {
+			others.push_back(this->_vDoorList.at(i));
 		}
 	}
 
@@ -426,6 +440,51 @@ void Level::LoadMap(std::string mapName, Graphics &graphics) {
 						if (ssPlayer.str() == "player") {
 							this->_v2SpawnPoint = Vector2(std::ceil(x)*globals::SPRITE_SCALE,
 								std::ceil(y)*globals::SPRITE_SCALE);
+						}
+
+
+						pObject = pObject->NextSiblingElement("object");
+					}
+				}
+			}
+			//parse doors
+			else if (ssCollisions.str() == "doors") {	//object group "doors"
+				XMLElement* pObject = pObjectGroup->FirstChildElement("object");
+				if (pObject != NULL) {
+					while (pObject) {
+						float x = pObject->FloatAttribute("x");
+						float y = pObject->FloatAttribute("y");
+						float w = pObject->FloatAttribute("width");
+						float h = pObject->FloatAttribute("height");
+						Rectangle rect = Rectangle(x, y, w, h);
+
+						//check door properties : door->properties
+						XMLElement* pProperties = pObject->FirstChildElement("properties");
+						if (pProperties != NULL)
+						{
+							while (pProperties) { //door->properties->property
+								XMLElement* pProperty = pProperties->FirstChildElement("property");
+								if (pProperty != NULL)
+								{
+									while (pProperty) {
+										const char* name = pProperty->Attribute("name");
+										std::stringstream ss;
+										ss << name;
+										if (ss.str() == "destination") {
+											//door has property to lead to new map
+											const char*value = pProperty->Attribute("value");
+											std::stringstream ss2;
+											ss2 << value;
+											Door door = Door(rect, ss2.str());
+											this->_vDoorList.push_back(door);
+										}
+
+										pProperty = pProperty->NextSiblingElement("property");
+									}
+								}
+
+								pProperties = pProperties->NextSiblingElement("properties");
+							}
 						}
 
 

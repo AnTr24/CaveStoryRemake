@@ -47,7 +47,7 @@ void Game::GameLoop() {
 
 	//player spritesheet is 16x16 per sprite, floats are for location on screen
 	//for visual studio, filepath starts at the folder where the .cpp and .h files are
-	this->_level = Level("Map 1", Vector2(100, 100), graphics);	//define level before player to get spawn point
+	this->_level = Level("Map 1", graphics);	//define level before player to get spawn point
 	this->_player = Player(graphics, this->_level.GetPlayerSpawnPoint());
 	this->_hud = HUD(graphics, _player);	//and hud after player to intialize some values
 
@@ -133,6 +133,8 @@ void Game::GameLoop() {
 		const int CURRENT_TIME_MS = SDL_GetTicks();	//get frame end time
 		int ELAPSED_TIME_MS = CURRENT_TIME_MS - LAST_UPDATE_TIME;	//find the elapsed time between frame start & end
 
+		this->_graphics = graphics;
+
 		this->Update(std::min(ELAPSED_TIME_MS, MAX_FRAME_TIME)); //update with the smaller value, at a max of 50ms
 
 		LAST_UPDATE_TIME = CURRENT_TIME_MS;	//update next frame start time
@@ -169,5 +171,11 @@ void Game::Update(float elapsedTime) {
 	if ((otherSlopes = this->_level.CheckSlopeCollisions(this->_player.GetBoundingBox())).size() > 0)
 	{//Player colldied with atleast 1 slope
 		this->_player.HandleSlopeCollisions(otherSlopes);
+	}
+	//check door collisions
+	std::vector<Door> otherDoors;
+	if ((otherDoors = this->_level.CheckDoorCollisions(this->_player.GetBoundingBox())).size() > 0)
+	{//Player colldied with atleast 1 slope
+		this->_player.HandleDoorCollision(otherDoors,this->_level,this->_graphics);
 	}
 }

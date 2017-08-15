@@ -134,6 +134,7 @@
   <ItemGroup>
     <ClInclude Include="animatedsprite.h" />
     <ClInclude Include="animatedtile.h" />
+    <ClInclude Include="door.h" />
     <ClInclude Include="game.h" />
     <ClInclude Include="globals.h" />
     <ClInclude Include="graphics.h" />

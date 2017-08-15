@@ -328,3 +328,20 @@ void Player::HandleSlopeCollisions(std::vector<Slope> &others) {
 		}
 	}
 }
+
+//void HandleDoorCollisions
+//handles a detected collision with a door the player is colliding with
+//ignores the rest of the doors in the collision list
+void Player::HandleDoorCollision(std::vector<Door> &others, Level &level, Graphics &graphics) {
+	//check if player is grounded and holding the down arrow(interacting with door)
+	//if so go through the door
+	if (!this->_bGrounded || !this->_bLookingDown) {
+		return;
+	}
+
+	for (int i = 0; i < others.size(); i++) {
+		level = Level(others.at(i).GetDestination(), graphics);
+		this->_x = level.GetPlayerSpawnPoint().x;
+		this->_y = level.GetPlayerSpawnPoint().y;
+	}
+}

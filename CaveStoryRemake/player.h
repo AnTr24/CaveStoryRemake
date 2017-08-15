@@ -8,9 +8,11 @@ Description:	Header file for player class.
 #define PLAYER_H
 
 //includes
-#include "animatedsprite.h";
-#include "globals.h";
-#include "slope.h";
+#include "animatedsprite.h"
+#include "globals.h"
+#include "slope.h"
+#include "door.h"
+#include "level.h"
 
 class Graphics;
 
@@ -75,6 +77,11 @@ public:
 	//void HandleSlopeCollisions
 	//handles a detected collision with ALL slopes the player is colliding with
 	void HandleSlopeCollisions(std::vector<Slope> &others);
+
+	//void HandleDoorCollisions
+	//handles a detected collision with a door the player is colliding with
+	//ignores the rest of the doors in the collision list
+	void HandleDoorCollision(std::vector<Door> &others, Level &level, Graphics &graphics);
 
 	//Getter functions to get X or Y coordinates
 	const float GetX() const;

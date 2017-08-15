@@ -10,8 +10,7 @@ Description:	Header file for Game class.
 #include "player.h"
 #include "level.h"
 #include "hud.h"
-
-class Graphics;
+#include "graphics.h"
 
 class Game {
 public:
@@ -27,6 +26,8 @@ private:
 	Level _level;	//defines the map/level
 
 	HUD _hud;	//hud for visualizing player info 
+
+	Graphics _graphics;
 };
 
 #endif 
