@@ -10,6 +10,7 @@ Includes
 #include "graphics.h"
 #include "globals.h"
 #include "utils.h"
+#include "enemy.h"
 
 #include "tinyxml2.h"
 
@@ -38,9 +39,13 @@ Level::~Level() {
 /*************************************************************************
 Functions
 **************************************************************************/
-void Level::Update(int elapsedTime) {
-	for (int i = 0; i < _vAnimatedTiles.size(); i++) {
-		_vAnimatedTiles.at(i).Update(elapsedTime);
+void Level::Update(int elapsedTime, Player &player) {
+	for (int i = 0; i < this->_vAnimatedTiles.size(); i++) {
+		this->_vAnimatedTiles.at(i).Update(elapsedTime);
+	}
+
+	for (int i = 0; i < this->_vEnemies.size(); i++) {
+		this->_vEnemies.at(i)->Update(elapsedTime, player);
 	}
 }
 
@@ -50,8 +55,12 @@ void Level::Draw(Graphics &graphics) {
 		this->_vTileList.at(i).Draw(graphics);
 	}
 
-	for (int i = 0; i < _vAnimatedTiles.size(); i++) {
-		_vAnimatedTiles.at(i).Draw(graphics);
+	for (int i = 0; i < this->_vAnimatedTiles.size(); i++) {
+		this->_vAnimatedTiles.at(i).Draw(graphics);
+	}
+
+	for (int i = 0; i < this->_vEnemies.size(); i++) {
+		this->_vEnemies.at(i)->Draw(graphics);
 	}
 }
 
@@ -487,6 +496,30 @@ void Level::LoadMap(std::string mapName, Graphics &graphics) {
 							}
 						}
 
+
+						pObject = pObject->NextSiblingElement("object");
+					}
+				}
+			}
+			//parse enemies
+			else if (ssCollisions.str() == "enemies") {	//object group "enemies"
+				float x, y;
+				XMLElement* pObject = pObjectGroup->FirstChildElement("object");
+				if (pObject != NULL) {
+					while (pObject) {
+						//we have an enemy...
+						x = pObject->FloatAttribute("x");
+						y = pObject->FloatAttribute("y");
+						Vector2 spawnP = { (int)(std::floor(x) * globals::SPRITE_SCALE), (int)(std::floor(y) * globals::SPRITE_SCALE) };
+
+						//Determine what enemy type it is
+						const char* name = pObject->Attribute("name");
+						std::stringstream ss;
+						ss << name;
+						if (ss.str() == "bat") {
+							this->_vEnemies.push_back(
+								std::make_shared<Bat>(graphics, spawnP));
+						}
 
 						pObject = pObject->NextSiblingElement("object");
 					}

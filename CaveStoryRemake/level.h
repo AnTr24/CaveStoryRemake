@@ -10,6 +10,7 @@ Description:	Header file for level class.
 //includes
 #include <string>
 #include <vector>
+#include <memory>
 
 #include "globals.h"
 #include "tile.h"
@@ -19,6 +20,8 @@ Description:	Header file for level class.
 #include "door.h"
 
 class Graphics;
+class Enemy;
+class Player;
 struct SDL_Texture;
 struct SDL_Rect;
 struct Tileset;
@@ -31,7 +34,7 @@ public:
 	~Level();	//desctructor
 
 	//the usual....
-	void Update(int elapsedTime);
+	void Update(int elapsedTime, Player &player);
 	void Draw(Graphics &graphics);
 
 	//Checks if <other> object collided with something
@@ -61,10 +64,11 @@ private:
 	std::vector<AnimatedTileInfo> _vAnimatedTileInfos;	//holds data on each animated tile
 
 	std::vector<Door> _vDoorList;	//holds the doors of the level
+	std::vector<std::shared_ptr<Enemy>> _vEnemies;
+
 
 	/*void LoadMap
-	*Loads a map
-	*/
+	*Loads a map*/
 	void LoadMap(std::string mapName, Graphics &graphics);
 
 	//Vector2 GetTilesetPosition

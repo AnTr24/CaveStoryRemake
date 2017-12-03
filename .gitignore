@@ -241,3 +241,6 @@ _Pvt_Extensions
 *.db
 *.db
 *.db
+*.db
+CaveStoryRemake.VC.db
+CaveStoryRemake/Content/Sprites/Thumbs.db

@@ -157,7 +157,7 @@ void Game::Draw(Graphics& graphics) {
 
 void Game::Update(float elapsedTime) {
 	this->_player.Update(elapsedTime);
-	this->_level.Update(elapsedTime);
+	this->_level.Update(elapsedTime, this->_player);
 	this->_hud.Update(elapsedTime);
 
 	//check tile collisions
