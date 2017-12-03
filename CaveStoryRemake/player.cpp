@@ -7,6 +7,7 @@ Description:	player class implementation, user will control this class ingame
 Includes
 **************************************************************************/
 #include "player.h"
+#include "enemy.h"
 #include "graphics.h"
 
 
@@ -35,7 +36,9 @@ Player::Player(Graphics &graphics, Vector2 spawnPoint) :
 	_bLookingDown(false),
 	_bBusy(false),
 	_iMaxHealth(3),
-	_iCurrentHealth(3)
+	_iCurrentHealth(3),
+	_iIFramesMax(500.0),
+	_iIFramesCurrent(0.0)
 {
 	graphics.LoadImage("Content/Sprites/MyChar.png");
 
@@ -64,6 +67,9 @@ void Player::Update(float elapsedTime) {
 	//Move by dy(vertical movement)
 	this->_y += this->_dy * elapsedTime;
 	this->_bGrounded = false; //assume we are always falling
+
+	//Alter IFrame timer
+	_iIFramesCurrent -= elapsedTime;
 
 	AnimatedSprite::Update(elapsedTime);
 }
@@ -289,8 +295,6 @@ void Player::HandleTileCollisions(std::vector<Rectangle> &others) {
 			}
 		}
 	}
-
-
 }
 
 //void HandleSlopeCollisions
@@ -344,4 +348,23 @@ void Player::HandleDoorCollision(std::vector<Door> &others, Level &level, Graphi
 		this->_x = level.GetPlayerSpawnPoint().x;
 		this->_y = level.GetPlayerSpawnPoint().y;
 	}
+}
+
+//void HandleEnemyCollisions
+//handles a detected collision with ALL enemies the player is colliding with
+void Player::HandleEnemyCollision(std::vector<std::shared_ptr<Enemy>> &others) {
+	for (int i = 0; i < others.size(); i++) {
+		others.at(i)->TouchPlayer(this);
+	}
+}
+
+//self explanatory
+void Player::GainHealth(int amount) {
+	if (_iIFramesCurrent <= 0) {
+		this->_iCurrentHealth += amount;
+	}
+
+	//Took damage...
+	if(amount < 0)
+		_iIFramesCurrent = _iIFramesMax;	//Give i-Frames after taking damage
 }

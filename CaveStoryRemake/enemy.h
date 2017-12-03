@@ -11,7 +11,6 @@ Description:	Handles enemy npc logic
 #include "animatedsprite.h"
 #include "globals.h"
 #include "player.h"
-
 #include <string>
 
 //declarations
@@ -24,7 +23,8 @@ public:
 	Enemy(Graphics &graphics, const std::string &filePath, int sourceX, int sourceY, int width, int height, float posX, float posY, float timeToUpdate);	
 	virtual void Update(int elapsedTime, Player &player);
 	virtual void Draw(Graphics &graphics);
-
+	virtual void TouchPlayer(Player* player) = 0;	//function for touch damage
+	
 	const inline int GetMaxHealth() const { return this->_maxHealth; }
 	const inline int GetCurrentHealth() const { return this->_currentHealth; }
 protected:
@@ -44,6 +44,7 @@ public:
 
 	void Update(int elapsedTime, Player &player);
 	void Draw(Graphics &graphics);
+	void TouchPlayer(Player* player);
 
 	/*AnimationDone
 	*Logic that occurs when animation finishes
@@ -54,6 +55,8 @@ public:
 	*	A required function that sets up the sprite's animations*/
 	void SetupAnimation();
 private:
+	float _startingX, _startingY;
+	bool _bMovingUp;
 };
 
 #endif	//end of #include guard

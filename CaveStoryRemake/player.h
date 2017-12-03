@@ -14,6 +14,7 @@ Description:	Header file for player class.
 #include "door.h"
 #include "level.h"
 
+class Enemy;
 class Graphics;
 
 //Class definition
@@ -83,6 +84,10 @@ public:
 	//ignores the rest of the doors in the collision list
 	void HandleDoorCollision(std::vector<Door> &others, Level &level, Graphics &graphics);
 
+	//void HandleEnemyCollisions
+	//handles a detected collision with ALL enemies the player is colliding with
+	void HandleEnemyCollision(std::vector<std::shared_ptr<Enemy>> &others);
+
 	//Getter functions to get X or Y coordinates
 	const float GetX() const;
 	const float GetY() const;
@@ -92,6 +97,8 @@ public:
 
 	//Getter functions to get player current health
 	const inline int GetCurrentHealth() const {return this->_iCurrentHealth;}
+
+	void GainHealth(int amount);
 
 private:
 	float _dx, _dy;	//change in x and y positions
@@ -104,5 +111,7 @@ private:
 	bool _bLookingDown;	//flag for player looking down
 	int _iMaxHealth;		//Total health of the player
 	int _iCurrentHealth;	//and current health
+	float _iIFramesMax;		//time for invincibility after getting hit
+	float _iIFramesCurrent;	//current time for invincibility after getting hit
 };
 #endif	//end of #include guard

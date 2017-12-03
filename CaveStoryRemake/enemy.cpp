@@ -34,7 +34,9 @@ Bat class
 Bat::Bat(){}
 
 Bat::Bat(Graphics &graphics, Vector2 spawnPoint) :
-	Enemy(graphics, "Content/Sprites/NpcCemet.png", 32, 32, 16, 16, spawnPoint.x, spawnPoint.y, 140) 
+	Enemy(graphics, "Content/Sprites/NpcCemet.png", 32, 32, 16, 16, spawnPoint.x, spawnPoint.y, 140),
+	_startingX(spawnPoint.x),
+	_startingY(spawnPoint.y)
 {
 	this->SetupAnimation();
 	this->PlayAnimation("FlyLeft");
@@ -45,6 +47,12 @@ void Bat::Update(int elapsedTime, Player &player) {
 	this->_direction = player.GetX() > this->_x ? RIGHT : LEFT;
 	this->PlayAnimation(this->_direction == RIGHT ? "FlyRight" : "FlyLeft");
 
+	//Move up or down
+	float movement = 0.05 * elapsedTime;
+	this->_y += this->_bMovingUp ? -movement : movement;
+	if (this->_y > (this->_startingY + 20) || this->_y < (this->_startingY - 20))
+		this->_bMovingUp = !this->_bMovingUp;
+
 	Enemy::Update(elapsedTime, player);
 }
 
@@ -53,7 +61,6 @@ void Bat::Draw(Graphics &graphics) {
 }
 
 void Bat::AnimationDone(std::string currentAnimation) {
-
 }
 
 void Bat::SetupAnimation() {
@@ -70,4 +77,8 @@ void Bat::SetupAnimation() {
 	//Add the animations
 	this->AddAnimation(flyLeftFrames, "FlyLeft", width, height, Vector2(0,0));
 	this->AddAnimation(flyRightFrames, "FlyRight", width, height, Vector2(0, 0));
+}
+
+void Bat::TouchPlayer(Player* player) {
+	player->GainHealth(-1);
 }

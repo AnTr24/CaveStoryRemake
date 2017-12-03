@@ -35,9 +35,12 @@ HUD::HUD(Graphics &graphics, Player &player) {
 /*************************************************************************
 Functions
 **************************************************************************/
-void HUD::Update(int elapsedTime) {
+void HUD::Update(int elapsedTime, Player &player) {
 	//On the sprite sheet Textbox.png, each number is offsetted by 8px
 	int numOffset = 8;
+
+	//update palyer info
+	this->_player = player;	
 	this->_spriteHealthNumber1.SetSourceRectX(numOffset * this->_player.GetCurrentHealth());
 
 	//calculate the width of the current-health bar

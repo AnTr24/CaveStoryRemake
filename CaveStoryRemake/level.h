@@ -22,6 +22,7 @@ Description:	Header file for level class.
 class Graphics;
 class Enemy;
 class Player;
+
 struct SDL_Texture;
 struct SDL_Rect;
 struct Tileset;
@@ -37,10 +38,11 @@ public:
 	void Update(int elapsedTime, Player &player);
 	void Draw(Graphics &graphics);
 
-	//Checks if <other> object collided with something
+	//Checks if "other" object collided with something
 	std::vector<Rectangle> CheckTileCollisions(const Rectangle &other);
 	std::vector<Slope> CheckSlopeCollisions(const Rectangle &other);
 	std::vector<Door> CheckDoorCollisions(const Rectangle &other);
+	std::vector<std::shared_ptr<Enemy>> CheckEnemyCollisions(const Rectangle &other);
 
 	//const Vector2 GetPlayerSpawnPoint
 	//Retrieves the location of player spawn

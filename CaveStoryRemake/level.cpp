@@ -10,6 +10,7 @@ Includes
 #include "graphics.h"
 #include "globals.h"
 #include "utils.h"
+#include "player.h"
 #include "enemy.h"
 
 #include "tinyxml2.h"
@@ -117,6 +118,19 @@ std::vector<Door> Level::CheckDoorCollisions(const Rectangle &other) {
 	for (int i = 0; i < this->_vDoorList.size(); i++) {
 		if (this->_vDoorList.at(i).CollidesWith(other)) {
 			others.push_back(this->_vDoorList.at(i));
+		}
+	}
+
+	return others;
+}
+
+//std::vector<std::shared_ptr<Enemy>> CheckEnemyCollisions
+//Checks if <other> object collided with an enemy
+std::vector<std::shared_ptr<Enemy>> Level::CheckEnemyCollisions(const Rectangle &other) {
+	std::vector<std::shared_ptr<Enemy>> others;
+	for (int i = 0; i < this->_vEnemies.size(); i++) {
+		if (this->_vEnemies.at(i)->GetBoundingBox().CollidesWith(other)) {
+			others.push_back(this->_vEnemies.at(i));
 		}
 	}
 

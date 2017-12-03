@@ -16,8 +16,8 @@ Constructors and Deconstructors
 **************************************************************************/
 namespace {
 	//define some constants for the game
-	const int FPS = 50;	//limit frames to 50
-	const int MAX_FRAME_TIME = 1000 / FPS;	//limit time a frame can last
+	const int FPS = 50;	//limit frames to 50 fps
+	const int MAX_FRAME_TIME = 1000 / FPS;	//limit time a frame can last in a second
 }
 
 //Game constructor
@@ -135,7 +135,7 @@ void Game::GameLoop() {
 
 		this->_graphics = graphics;
 
-		this->Update(std::min(ELAPSED_TIME_MS, MAX_FRAME_TIME)); //update with the smaller value, at a max of 50ms
+		this->Update(std::min(ELAPSED_TIME_MS, MAX_FRAME_TIME)); //update with the smaller value, at a max of 20ms
 
 		LAST_UPDATE_TIME = CURRENT_TIME_MS;	//update next frame start time
 
@@ -158,7 +158,7 @@ void Game::Draw(Graphics& graphics) {
 void Game::Update(float elapsedTime) {
 	this->_player.Update(elapsedTime);
 	this->_level.Update(elapsedTime, this->_player);
-	this->_hud.Update(elapsedTime);
+	this->_hud.Update(elapsedTime, this->_player);
 
 	//check tile collisions
 	std::vector<Rectangle> others;
@@ -166,7 +166,7 @@ void Game::Update(float elapsedTime) {
 	{//Player colldied with atleast 1 tile
 		this->_player.HandleTileCollisions(others);
 	}
-	//Check slopes
+	//Check slopes collisions
 	std::vector<Slope> otherSlopes;
 	if ((otherSlopes = this->_level.CheckSlopeCollisions(this->_player.GetBoundingBox())).size() > 0)
 	{//Player colldied with atleast 1 slope
@@ -177,5 +177,11 @@ void Game::Update(float elapsedTime) {
 	if ((otherDoors = this->_level.CheckDoorCollisions(this->_player.GetBoundingBox())).size() > 0)
 	{//Player colldied with atleast 1 slope
 		this->_player.HandleDoorCollision(otherDoors,this->_level,this->_graphics);
+	}
+	//Check enemy collisions
+	std::vector<std::shared_ptr<Enemy>> otherEnemies;
+	if ((otherEnemies = this->_level.CheckEnemyCollisions(this->_player.GetBoundingBox())).size() > 0)
+	{//Player colldied with atleast 1 slope
+		this->_player.HandleEnemyCollision(otherEnemies);
 	}
 }
